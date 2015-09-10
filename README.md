@@ -87,7 +87,7 @@ Sometimes you need to access multiple values of a subobject that has a long pref
 and make a JsonObject of it and then access its properties.
 
 Now if you want to edit the object (set or add values) and want these changes to affect the original object, the way of doing this is by using 
-JsonObject::getJsonObjects($jsonpath). This method works the same way get does, but it will return the results as JsonObject instances containing a reference to the value in the source JsonObject.
+`JsonObject::getJsonObjects($jsonpath)`. This method works the same way get does, but it will return the results as JsonObject instances containing a reference to the value in the source JsonObject.
 
 JsonPath Language
 =================
