@@ -1,0 +1,244 @@
+JsonPath
+========
+
+This is a [JSONPath](http://goessner.net/articles/JsonPath/) implementation for PHP. 
+
+This implementation features all elements in the specification except the `()` operator 
+which isn't implemented as I really couldn't come up with a case that it'd be usefull 
+(In the spcecification there is the `$..a[(@.length-1)]`, but this can be achieved with `$..a[-1]` 
+and the later is simpler).
+
+On top of this it implements some extended features:
+* Regex match comparisons (p.e. `$.store.book[?(@.author =~ /.*Tolkien/)]`)
+* For the child operator `[]` there is no need to surround child names with quotes (p.e. `$.[store][book, bicycle]`) except the name of the field is a non-valid javascript variable name.
+* `.length` can be used to get the length of a string, get the length of an array and to check if a node has childs.
+
+Features
+========
+This implementation has the following features:
+* Object oriented implementation.
+* __Get__, __set__ and __add__ operations.
+* Magick methods implement:
+    * `__get`: `$obj->{'$...'}`.
+    * `__set`: `$obj->{'$...'} = $val`.
+    * `__toString`: `echo $obj` prints the json representation of the JsonObject.
+* Not using `eval()`.
+
+Usage
+=====
+Add the following code to your composer.json:
+```
+"require": {
+    "Skyscanner/JsonPath": "dev-master"
+}
+```
+
+Run `composer update`.
+
+In every file you use it add:  
+```
+use JsonPath\JsonObject;
+```
+
+Now you can create an instance of JsonObject and use it:
+```
+// $json can be a string containing json, a PHP array, a PHP object or null.
+// If $json is null (or not present) the JsonObject will be empty.
+$jsonObject = new JsonObject();
+// or
+$jsonObject = new JsonObject($json);
+
+// get
+$obj->get($jsonPath);
+$obj->{'$.json.path'};
+
+// set
+$obj->set($jsonPath, $value);
+$obj->{'$.json.path'} = $value;
+
+// get the json representation
+$obj->getJson();
+$str = (string)$obj;
+echo $obj;
+
+// get the PHP array representation
+$obj->getArray();
+
+// add values
+$obj->add($jsonPath, $value[, $field]);
+
+// remove values
+$obj->remove($jsonPath, $field);
+```
+
+SmartGet
+--------
+
+When creating a new instance of JsonObject, you can pass a second parameter to the constructor. 
+This sets the behaviour of the instance to use SmartGet.
+
+What SmartGet does is to determine if the given JsonPath branches at some point, if it does it behaves as usual; 
+otherwise, it will directly return the value pointed by the given path (not the array containing it).
+
+GetJsonObjects
+--------------
+
+Sometimes you need to access multiple values of a subobject that has a long prefix (p.e. `$.a.very.long.prefix.for.[*].object`), in this case you would first get said object 
+and make a JsonObject of it and then access its properties.
+
+Now if you want to edit the object (set or add values) and want these changes to affect the original object, the way of doing this is by using 
+JsonObject::getJsonObjects($jsonpath). This method works the same way get does, but it will return the results as JsonObject instances containing a reference to the value in the source JsonObject.
+
+JsonPath Language
+=================
+This library implements the following specification:
+```
+number     = ([0-9]+(\.[0-9]*) | ([0-9]*\.[0-9]+))
+string      = ('\''.*?'\'' | '"'.*?'"')
+boolean     = ('true' | 'false')
+regpattern  = '/'.*?'/'
+null        = 'null'
+index       = -?[0-9]+
+
+jsonpath    = '$' operator*
+childpath   = '@' operator*
+
+operator    = (childname | childfilter | recursive) operator*
+
+childname   = '.' (js_valid_name | '*')
+recursive   = '..' (js_valid_name | '*')
+childfilter = '[' ('*' | namelist | indexlist | arrayslice | filterexpr) ']'
+
+namelist    = js_valid_name (',' (js_valid_name | '\'' .*? '\'' | '"' .*? '"'))*
+indexlist   = index (',' index)*
+arrayslice  = index? ':' index? ':' index?
+filterexpr  = '?(' ors ')'
+
+ors         = ands (' or ' ands)*
+ands        = expr (' and ' expr)*
+expr        = 'not'? (value | comp)
+comp        = value ('==' | '!=' | '<' | '>' | '<=' | '>=' | '=~') value
+value       = (jsonpath | childpath | number | string | boolean | regpattern | null | length)
+length      = (jsonpath | childpath) '.length'
+```
+
+__Limitations__ on the specification:  
+* The jsonpath inside _value_ cannot contain `or`, `and` or any comparator.
+* Jsonpaths in _value_ return the first element of the set or false if no result.
+* Boolean operations can't be grouped with parethesis.
+* `and`s are run before `or`s. That means that `a and 1 = b or c != d` is the same
+as `(a and 1) or (c != d)`
+
+__The `.length` operator__ can be used to:
+* Get the number of childs a node in the JsonObject has: `$..*[?(@.length > 3)]`
+* Filter for nodes that have childs: `$..*[?(@.length)]`
+* Or filter for nodes that don't have childs (leaves): `$..*[?(not @.length)]`
+* Get the length of a string: `$.path.to[?(@.a.string.length > 10)]`
+
+__The comparators__:  
+`==`, `!=`, `<`, `>`, `<=`, `>=` do what expected (compare by type and value).  
+`=~` is a regex comparator, matches the left operand with the pattern in the right operand. The value on the left must be a _string_ and on 
+the right _regpattern_. Other wise returns `false`.
+
+JsonPath Example
+================
+Consider the following json:
+```
+{ "store": {
+    "book": [
+      { "category": "reference",
+        "author": "Nigel Rees",
+        "title": "Sayings of the Century",
+        "price": 8.95,
+        "available": true
+      },
+      { "category": "fiction",
+        "author": "Evelyn Waugh",
+        "title": "Sword of Honour",
+        "price": 12.99,
+        "available": false
+      },
+      { "category": "fiction",
+        "author": "Herman Melville",
+        "title": "Moby Dick",
+        "isbn": "0-553-21311-3",
+        "price": 8.99,
+        "available": true
+      },
+      { "category": "fiction",
+        "author": "J. R. R. Tolkien",
+        "title": "The Lord of the Rings",
+        "isbn": "0-395-19395-8",
+        "price": 22.99,
+        "available": false
+      }
+    ],
+    "bicycle": {
+      "color": "red",
+      "price": 19.95,
+      "available": true
+    }
+  },
+  "authors": [
+    "Nigel Rees",
+    "Evelyn Waugh",
+    "Herman Melville",
+    "J. R. R. Tolkien"
+  ]
+}
+```
+
+JsonPath | Result
+---------|--------
+`$.store.bicycle.price` | The price of the bicycle.
+`$.store.book[*]` | All books.
+`$.store.book[1,3]` | The second and fourth book.
+`$.store.book[1:3]` | From the second book to the fourth.
+`$.store.book[:2]` | From the first book to the third.
+`$.store.book[x:y:z]` | Books from x to y with a step of z.
+`$..book[?(@.category == 'fiction')]` | All books with category == 'fiction'.
+`$..*[?(@.available == true)].price` | All prices of available products.
+`$..book[?(@.price < 10)].title` | The title of all books with price lower than 10.
+`$..book[?(@.author==$.authors[3])]` | All books by "J. R. R. Tolkien"
+`$[store]` | The store.
+`$['store']` | The store.
+`$..book[*][title, 'category', "author"]` | title, category and author of all books.
+
+Test
+====
+To test run from the project root folder:  
+`php app/test.php <jsonpath> [<file to json file>]`
+
+If no json file is given it defaults to the json object described before in this file.
+
+For example:  
+`php app/test.php "$..*[?(@.category == 'fiction' and @.price < 10 or @.color == \"red\")].price"`  
+Result should be:  
+`[19.95,8.99]`
+
+Changelog
+=========
+0.5
+---
+* Added getJsonObjects to get child JsonObjects that reference to the original JsonObject contents. 
+This is also affected by _smartGet_.
+
+0.4
+---
+* Added support for json objects with fields with names that are not valid javascript variable
+ names.
+* Fixed error in smart get when accessing a list of names or list of indices and only one existed in the object.
+
+0.3
+---
+* Added smart get
+
+0.2
+---
+* Added errors when invalid json type is passed to construct
+* Efficiency improvements
+* All tokens are constants
+
+0.1
+---
+* Basic JsonPath functionality
