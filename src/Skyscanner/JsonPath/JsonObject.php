@@ -22,16 +22,13 @@ use Utilities\ArraySlice;
 /**
  * This is a [JSONPath](http://goessner.net/articles/JsonPath/) implementation for PHP.
  *
- * This implementation features all elements in the specification except the `()` operator
- * which isn't implemented as I really couldn't come up with a case that it'd be usefull
- * (In the spcecification there is the `$..a[(@.length-1)]`, but this can be achieved with `$..a[-1]`
- * and the later is simpler).
+ * This implementation features all elements in the specification except the `()` operator (in the spcecification there is the `$..a[(@.length-1)]`, but this can be achieved with `$..a[-1]` and the latter is simpler).
  *
- * On top of this it implements following extended features:
+ * On top of this it implements some extended features:
  *
  *  * Regex match comparisons (p.e. `$.store.book[?(@.author =~ /.*Tolkien/)]`)
- *  * For the child operator `[]` there is no need to surround child names with quotes (p.e. `$.[store][book, bicycle]`) except the name of the field is a non-valid javascript variable name.
- *  * `.length` can be used to get the length of a string, get the length of an array and to check if a node has childs.
+ *  * For the child operator `[]` there is no need to surround child names with quotes (p.e. `$.[store][book, bicycle]`) except if the name of the field is a non-valid javascript variable name.
+ *  * `.length` can be used to get the length of a string, get the length of an array and to check if a node has children.
  *
  * Features
  * ========
@@ -39,7 +36,7 @@ use Utilities\ArraySlice;
  *
  *  * Object oriented implementation.
  *  * __Get__, __set__ and __add__ operations.
- *  * Magick methods:
+ *  * Magic methods implemented:
  *    * `__get`: `$obj->{'$.json.path'}`.
  *    * `__set`: `$obj->{'$.json.path'} = $val`.
  *    * `__toString`: `echo $obj` prints the json representation of the JsonObject.
@@ -82,7 +79,7 @@ use Utilities\ArraySlice;
  * This sets the behaviour of the instance to use SmartGet.
  *
  * What SmartGet does is to determine if the given JsonPath branches at some point, if it does it behaves as usual;
- * otherwise, it will directly return the value pointed by the given path (not the array containing it).
+ * otherwise, it will directly return the value pointed to by the given path (not the array containing it).
  *
  *      $json = array(
  *          "a" => array(
