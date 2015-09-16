@@ -1,6 +1,6 @@
 {
     "name": "skyscanner/jsonpath",
-    "desciption": "JsonPath implementation in PHP.",
+    "description": "JSONPath implementation for querying JSON arrays",
     "version": "0.5.0",
     "type": "library",
     "keywords": ["jsonpath", "json", "path"],
