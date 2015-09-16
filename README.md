@@ -1,5 +1,7 @@
 JsonPath
 ========
+[![Build Status](https://travis-ci.org/Skyscanner/JsonPath-PHP.svg)](https://travis-ci.org/Skyscanner/JsonPath-PHP)
+[![Coverage Status](https://coveralls.io/repos/Skyscanner/JsonPath-PHP/badge.svg?branch=master&service=github)](https://coveralls.io/github/Skyscanner/JsonPath-PHP?branch=master)
 
 This is a [JSONPath](http://goessner.net/articles/JsonPath/) implementation for PHP. 
 
