@@ -1,5 +1,5 @@
 {
-    "name": "Skyscanner/JsonPath",
+    "name": "skyscanner/jsonpath",
     "desciption": "JsonPath implementation in PHP.",
     "version": "0.5.0",
     "type": "library",
