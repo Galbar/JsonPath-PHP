@@ -2,6 +2,8 @@ JsonPath
 ========
 [![Build Status](https://travis-ci.org/Skyscanner/JsonPath-PHP.svg)](https://travis-ci.org/Skyscanner/JsonPath-PHP)
 [![Coverage Status](https://coveralls.io/repos/Skyscanner/JsonPath-PHP/badge.svg?branch=master&service=github)](https://coveralls.io/github/Skyscanner/JsonPath-PHP?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/skyscanner/jsonpath/v/stable)](https://packagist.org/packages/skyscanner/jsonpath)
+[![License](https://poser.pugx.org/skyscanner/jsonpath/license)](https://packagist.org/packages/skyscanner/jsonpath)
 
 This is a [JSONPath](http://goessner.net/articles/JsonPath/) implementation for PHP. 
 
@@ -25,10 +27,11 @@ This implementation has the following features:
 
 Usage
 =====
-Add the following code to your composer.json:
+Add the following code to your composer.json. Use the dev-master for the bleeding edge version or [![Latest Stable Version](https://poser.pugx.org/skyscanner/jsonpath/v/stable)](https://packagist.org/packages/skyscanner/jsonpath)
+
 ```
 "require": {
-    "Skyscanner/JsonPath": "dev-master"
+    "skyscanner/jsonpath": "dev-master"
 }
 ```
 
