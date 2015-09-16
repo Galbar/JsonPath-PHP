@@ -3,22 +3,19 @@ JsonPath
 
 This is a [JSONPath](http://goessner.net/articles/JsonPath/) implementation for PHP. 
 
-This implementation features all elements in the specification except the `()` operator 
-which isn't implemented as I really couldn't come up with a case that it'd be usefull 
-(In the spcecification there is the `$..a[(@.length-1)]`, but this can be achieved with `$..a[-1]` 
-and the later is simpler).
+This implementation features all elements in the specification except the `()` operator (in the spcecification there is the `$..a[(@.length-1)]`, but this can be achieved with `$..a[-1]` and the latter is simpler).
 
 On top of this it implements some extended features:
 * Regex match comparisons (p.e. `$.store.book[?(@.author =~ /.*Tolkien/)]`)
-* For the child operator `[]` there is no need to surround child names with quotes (p.e. `$.[store][book, bicycle]`) except the name of the field is a non-valid javascript variable name.
-* `.length` can be used to get the length of a string, get the length of an array and to check if a node has childs.
+* For the child operator `[]` there is no need to surround child names with quotes (p.e. `$.[store][book, bicycle]`) except if the name of the field is a non-valid javascript variable name.
+* `.length` can be used to get the length of a string, get the length of an array and to check if a node has children.
 
 Features
 ========
 This implementation has the following features:
 * Object oriented implementation.
 * __Get__, __set__ and __add__ operations.
-* Magick methods implement:
+* Magic methods implemented:
     * `__get`: `$obj->{'$...'}`.
     * `__set`: `$obj->{'$...'} = $val`.
     * `__toString`: `echo $obj` prints the json representation of the JsonObject.
@@ -206,10 +203,10 @@ JsonPath | Result
 
 Test
 ====
-To test run from the project root folder:  
+To run tests from the project root folder:  
 `php app/test.php <jsonpath> [<file to json file>]`
 
-If no json file is given it defaults to the json object described before in this file.
+If no json file is given it defaults to the json object described previously in this file.
 
 For example:  
 `php app/test.php "$..*[?(@.category == 'fiction' and @.price < 10 or @.color == \"red\")].price"`  
@@ -220,7 +217,7 @@ Changelog
 =========
 0.5
 ---
-* Added getJsonObjects to get child JsonObjects that reference to the original JsonObject contents. 
+* Added getJsonObjects to get child JsonObjects that reference the original JsonObject contents. 
 This is also affected by _smartGet_.
 
 0.4
