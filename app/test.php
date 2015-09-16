@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-include './vendor/autoload.php';
+include __DIR__ . './../vendor/autoload.php';
 
 use JsonPath\JsonObject;
 
@@ -84,8 +84,8 @@ try {
     print "Error: '" . $e->getMessage() . "'\r\n";
     die();
 }
-if ($r === False) {
-    print "False";
+if ($r === false) {
+    print "false";
 } else {
     print json_encode($r);
 }

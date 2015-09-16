@@ -203,7 +203,7 @@ JsonPath | Result
 
 Test
 ====
-To run tests from the project root folder:  
+To run tests, from the project root folder:  
 `php app/test.php <jsonpath> [<file to json file>]`
 
 If no json file is given it defaults to the json object described previously in this file.
@@ -213,29 +213,7 @@ For example:
 Result should be:  
 `[19.95,8.99]`
 
-Changelog
-=========
-0.5
----
-* Added getJsonObjects to get child JsonObjects that reference the original JsonObject contents. 
-This is also affected by _smartGet_.
-
-0.4
----
-* Added support for json objects with fields with names that are not valid javascript variable
- names.
-* Fixed error in smart get when accessing a list of names or list of indices and only one existed in the object.
-
-0.3
----
-* Added smart get
-
-0.2
----
-* Added errors when invalid json type is passed to construct
-* Efficiency improvements
-* All tokens are constants
-
-0.1
----
-* Basic JsonPath functionality
+Docs
+====
+To generate the docs, from the project root folder:  
+`php vendor/bin/sami.php update app/docgen.php`
