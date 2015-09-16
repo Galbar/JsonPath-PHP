@@ -27,7 +27,7 @@ This implementation has the following features:
 
 Usage
 =====
-Add the following code to your composer.json. Use the dev-master for the bleeding edge version or [![Latest Stable Version](https://poser.pugx.org/skyscanner/jsonpath/v/stable)](https://packagist.org/packages/skyscanner/jsonpath)
+Add the following code to your composer.json. Use `dev-master` for the bleeding edge version or [![Latest Stable Version](https://poser.pugx.org/skyscanner/jsonpath/v/stable)](https://packagist.org/packages/skyscanner/jsonpath)
 
 ```
 "require": {
