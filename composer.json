@@ -1,6 +1,6 @@
 {
     "name": "skyscanner/jsonpath",
-    "description": "JSONPath implementation for querying JSON arrays",
+    "description": "JSONPath implementation for querying and updating JSON arrays",
     "version": "0.5.0",
     "type": "library",
     "keywords": ["jsonpath", "json", "path"],
