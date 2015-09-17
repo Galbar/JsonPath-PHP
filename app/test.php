@@ -18,6 +18,8 @@
 include __DIR__ . './../vendor/autoload.php';
 
 use JsonPath\JsonObject;
+use JsonPath\InvalidJsonException;
+use JsonPath\InvalidJsonPathException;
 
 $json = '
 { "store": {
@@ -76,14 +78,20 @@ switch (count($argv)) {
         $jsonPath = $argv[1];
 }
 
-$jsonObject = new JsonObject($json);
+try {
+    $jsonObject = new JsonObject($json);
+} catch (InvalidJsonException $e) {
+    print "Invalid JSON error: '" . $e->getMessage() . "'\r\n";
+    die();
+}
 
 try {
     $r = $jsonObject->get($jsonPath);
-} catch (\Exception $e) {
-    print "Error: '" . $e->getMessage() . "'\r\n";
+} catch (InvalidJsonPathException $e) {
+    print "Invalid JSONPath error: '" . $e->getMessage() . "'\r\n";
     die();
 }
+
 if ($r === false) {
     print "false";
 } else {

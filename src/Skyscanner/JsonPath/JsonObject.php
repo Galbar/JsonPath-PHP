@@ -18,6 +18,8 @@
 namespace JsonPath;
 
 use Utilities\ArraySlice;
+use JsonPath\InvalidJsonException;
+use JsonPath\InvalidJsonPathException;
 
 /**
  * This is a [JSONPath](http://goessner.net/articles/JsonPath/) implementation for PHP.
@@ -159,6 +161,7 @@ class JsonObject
      * will be initialized empty.
      *
      * @param mixed $json json
+     * @param bool $smartGet enable smart get
      *
      * @return void
      */
@@ -169,14 +172,14 @@ class JsonObject
         } else if (is_string($json)) {
             $this->jsonObject = json_decode($json, true);
             if ($this->jsonObject === null) {
-                throw new \Exception("Invalid json");
+                throw new InvalidJsonException("string does not contain a valid JSON object.");
             }
         } else if (is_array($json)) {
             $this->jsonObject = $json;
         } else if (is_object($json)){
             $this->jsonObject = json_decode(json_encode($json), true);
         } else {
-            throw new \Exception("Invalid json");
+            throw new InvalidJsonException("value does not encode a JSON object.");
         }
         $this->smartGet = $smartGet;
     }
@@ -626,7 +629,7 @@ class JsonObject
                     }
                 }
             } else {
-                throw new \Exception("Invalid JsonPath");
+                throw new InvalidJsonPathException($contents);
             }
             return true;
         }
@@ -648,7 +651,7 @@ class JsonObject
     {
         $match = array();
         if (preg_match(self::RE_ROOT_OBJECT, $jsonPath, $match) === 0) {
-            throw new \Exception("Invalid JsonPath");
+            throw new InvalidJsonPathException($jsonPath);
         }
 
         $jsonPath = $match[1];
@@ -688,7 +691,7 @@ class JsonObject
                     $jsonPath = $match[2];
                 }
             } else {
-                throw new \Exception("Invalid JsonPath");
+                throw new InvalidJsonPathException($jsonPath);
             }
             $selection = $newSelection;
         }

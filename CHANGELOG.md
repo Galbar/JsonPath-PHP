@@ -1,5 +1,12 @@
 Changelog
 =========
+0.6
+---
+* Added custom Exception classes:
+    * `InvalidJsonException` is thrown when an invalid values is given to the 
+    JsonObject constructor.
+    * `InvalidJsonPathException` is thrown when an invalid JSONPath is given.
+
 0.5
 ---
 * Added getJsonObjects to get child JsonObjects that reference the original JsonObject contents. 

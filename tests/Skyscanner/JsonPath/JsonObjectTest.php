@@ -18,6 +18,8 @@
 namespace Tests;
 
 use JsonPath\JsonObject;
+use JsonPath\InvalidJsonException;
+use JsonPath\InvalidJsonPathException;
 
 /**
  * Class JsonObjectTest
@@ -783,22 +785,22 @@ class JsonPathTest extends \PHPUnit_Framework_TestCase
      * @return void
      * @dataProvider testConstructErrorsProvider
      */
-    public function testConstructErrors($json)
+    public function testConstructErrors($json, $message)
     {
         $exception = null;
         try {
             $jsonObject = new JsonObject($json);
-        } catch (\Exception $e) {
+        } catch (InvalidJsonException $e) {
             $exception = $e;
         }
-        $this->assertEquals($exception->getMessage(), "Invalid json");
+        $this->assertEquals($exception->getMessage(), $message);
     }
 
     public function testConstructErrorsProvider()
     {
         return array(
-            array(5),
-            array('{"invalid": json}')
+            array(5, 'value does not encode a JSON object.'),
+            array('{"invalid": json}', 'string does not contain a valid JSON object.')
         );
     }
 
@@ -810,24 +812,24 @@ class JsonPathTest extends \PHPUnit_Framework_TestCase
      * @return void
      * @dataProvider testParsingErrorsProvider
      */
-    public function testParsingErrors($jsonPath)
+    public function testParsingErrors($jsonPath, $token)
     {
         $jsonObject = new JsonObject($this->json);
         $exception = null;
         try {
             $jsonObject->get($jsonPath);
-        } catch (\Exception $e) {
+        } catch (InvalidJsonPathException $e) {
             $exception = $e;
         }
-        $this->assertEquals($exception->getMessage(), "Invalid JsonPath");
+        $this->assertEquals($exception->getMessage(), "Error in JSONPath near '" . $token . "'");
     }
 
     public function testParsingErrorsProvider()
     {
         return array(
-            array('$[store'),
-            array('$[{fail}]'),
-            array('a.bc')
+            array('$[store', '[store'),
+            array('$[{fail}]', '{fail}'),
+            array('a.bc', 'a.bc')
         );
     }
 
