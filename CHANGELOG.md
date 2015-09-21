@@ -1,5 +1,11 @@
 Changelog
 =========
+0.7
+---
+* set now creates non-existent intermediate objects. 
+(p.e. if quering '$.a' results in false, when setting 
+'$.a.b' to a value '$.a' will be created as a result of this).
+
 0.6
 ---
 * Added custom Exception classes:

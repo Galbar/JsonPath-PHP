@@ -652,6 +652,42 @@ class JsonPathTest extends \PHPUnit_Framework_TestCase
         $jsonObject = new JsonObject($this->json, $smartGet);
         $jsonObject->set('$.authors', array("Patrick Rothfuss", "Trudi Canavan"));
         $this->assertEquals(array("Patrick Rothfuss", "Trudi Canavan"), $jsonObject->get('$.authors[*]'));
+        $jsonObject->set('$.store.car[0,1].type', 'sport');
+        $jsonObject->set('$.store[pen, pencil].price', 0.99);
+        $this->assertEquals(
+            array(
+                0.99,
+                0.99
+            ),
+            $jsonObject->get('$.store[pen, pencil].price')
+        );
+        if ($smartGet) {
+            $this->assertEquals(
+                array(
+                    array(
+                        'type' => 'sport'
+                    ),
+                    array(
+                        'type' => 'sport'
+                    )
+                ),
+                $jsonObject->get('$.store.car')
+            );
+        } else {
+            $this->assertEquals(
+                array(
+                    array(
+                        array(
+                            'type' => 'sport'
+                        ),
+                        array(
+                            'type' => 'sport'
+                        )
+                    )
+                ),
+                $jsonObject->get('$.store.car')
+            );
+        }
     }
 
     public function testGetValue()

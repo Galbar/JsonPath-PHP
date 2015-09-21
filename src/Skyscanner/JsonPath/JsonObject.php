@@ -309,8 +309,14 @@ class JsonObject
 
     /**
      * Sets all elements that result from the $jsonPath query
-     * to $value. This method returns $this to enable fluent
+     * to $value. This method will create previously non-existent
+     * JSON objects if the path contains them (p.e. if quering '$.a'
+     * results in false, when setting '$.a.b' to a value '$.a' will be created
+     * as a result of this).
+     *
+     * This method returns $this to enable fluent
      * interface.
+     *
      *
      * @param string $jsonPath jsonPath
      * @param mixed $value value
@@ -319,7 +325,7 @@ class JsonObject
      */
     public function set($jsonPath, $value)
     {
-        $result = $this->getReal($this->jsonObject, $jsonPath);
+        $result = $this->getReal($this->jsonObject, $jsonPath, true);
         if ($result !== false) {
             foreach ($result as &$element) {
                 $element = $value;
@@ -343,7 +349,7 @@ class JsonObject
      */
     public function add($jsonPath, $value, $field=null)
     {
-        $result = $this->getReal($this->jsonObject, $jsonPath);
+        $result = $this->getReal($this->jsonObject, $jsonPath, true);
         foreach ($result as &$element) {
             if (is_array($element)) {
                 if ($field == null) {
@@ -531,7 +537,7 @@ class JsonObject
         return 0;
     }
 
-    private function opChildName(&$jsonObject, $childName, &$result)
+    private function opChildName(&$jsonObject, $childName, &$result, $createInexistent = false)
     {
         if (is_array($jsonObject)) {
             if ($childName === self::TOK_ALL) {
@@ -541,13 +547,16 @@ class JsonObject
                 }
             } else if (array_key_exists($childName, $jsonObject)) {
                 $result[] = &$jsonObject[$childName];
+            } else if ($createInexistent) {
+                $jsonObject[$childName] = array();
+                $result[] = &$jsonObject[$childName];
             }
             return true;
         }
         return false;
     }
 
-    private function opChildSelector(&$jsonObject, $contents, &$result)
+    private function opChildSelector(&$jsonObject, $contents, &$result, $createInexistent = false)
     {
         if (is_array($jsonObject)) {
             $match = array();
@@ -567,13 +576,17 @@ class JsonObject
                 if (count($names) > 1) {
                     $this->hasDiverged = true;
                 }
+
                 $names = array_filter(
                     $names,
-                    function($x) use ($jsonObject) {
-                        return array_key_exists($x, $jsonObject);
+                    function($x) use ($createInexistent, $jsonObject) {
+                        return $createInexistent || array_key_exists($x, $jsonObject);
                     }
                 );
                 foreach ($names as $name) {
+                    if (!array_key_exists($name, $jsonObject)) {
+                        $jsonObject[$name] = array();
+                    }
                     $result[] = &$jsonObject[$name];
                 }
             } else if (preg_match(self::RE_INDEX_LIST, $contents)) {
@@ -586,13 +599,17 @@ class JsonObject
                 if (count($index) > 1) {
                     $this->hasDiverged = true;
                 }
+
                 $index = array_filter(
                     $index,
-                    function($x) use ($jsonObject) {
-                        return array_key_exists($x, $jsonObject);
+                    function($x) use ($createInexistent, $jsonObject) {
+                        return $createInexistent || array_key_exists($x, $jsonObject);
                     }
                 );
                 foreach ($index as $i) {
+                    if (!array_key_exists($i, $jsonObject)) {
+                        $jsonObject[$i] = array();
+                    }
                     $result[] = &$jsonObject[$i];
                 }
             } else if (preg_match(self::RE_ARRAY_INTERVAL, $contents, $match)) {
@@ -647,7 +664,7 @@ class JsonObject
         }
     }
 
-    private function getReal(&$jsonObject, $jsonPath)
+    private function getReal(&$jsonObject, $jsonPath, $createInexistent = false)
     {
         $match = array();
         if (preg_match(self::RE_ROOT_OBJECT, $jsonPath, $match) === 0) {
@@ -662,7 +679,7 @@ class JsonObject
             $newSelection = array();
             if (preg_match(self::RE_CHILD_NAME, $jsonPath, $match)) {
                 foreach ($selection as &$jsonObject) {
-                    $this->opChildName($jsonObject, $match[1], $newSelection);
+                    $this->opChildName($jsonObject, $match[1], $newSelection, $createInexistent);
                 }
                 if (empty($newSelection)) {
                     $selection = false;
@@ -673,7 +690,7 @@ class JsonObject
             } else if ($this->matchValidExpression($jsonPath, $match)) {
                 $contents = $match[0];
                 foreach ($selection as &$jsonObject) {
-                    $this->opChildSelector($jsonObject, $contents, $newSelection);
+                    $this->opChildSelector($jsonObject, $contents, $newSelection, $createInexistent);
                 }
                 if (empty($newSelection)) {
                     $selection = false;
