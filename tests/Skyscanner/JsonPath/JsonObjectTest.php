@@ -113,6 +113,29 @@ class JsonPathTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array(
+                json_decode('[
+                    {"category": "reference",
+                    "author": "Nigel Rees",
+                    "title": "Sayings of the Century",
+                    "price": 8.95,
+                    "available": true
+                    },
+                    {"category": "fiction",
+                    "author": "Herman Melville",
+                    "title": "Moby Dick",
+                    "isbn": "0-553-21311-3",
+                    "price": 8.99,
+                    "available": true},
+                    {"category": "fiction",
+                    "author": "J. R. R. Tolkien",
+                    "title": "The Lord of the Rings",
+                    "isbn": "0-395-19395-8",
+                    "price": 22.99,
+                    "available": false}
+                ]', true),
+                "$.store.book[-4, -2, -1]"
+            ),
+            array(
                 array(19.95),
                 "$.store.bicycle.price"
             ),

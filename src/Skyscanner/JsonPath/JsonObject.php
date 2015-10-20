@@ -114,8 +114,8 @@ class JsonObject
 
     // Array expressions
     const RE_ARRAY_INTERVAL = '/^(?:(-?\d*:-?\d*)|(-?\d*:-?\d*:-?\d*))$/';
-    const RE_INDEX_LIST = '/^(\d+)(\s*,\s*\d+)*$/';
-    const RE_LENGTH = '/^(.*?).length$/';
+    const RE_INDEX_LIST = '/^(-?\d+)(\s*,\s*-?\d+)*$/';
+    const RE_LENGTH = '/^(.*).length$/';
 
     // Object expression
     const RE_CHILD_NAME_LIST = '/^(:?([a-zA-Z\_\$][\w\$]*?|".*?"|\'.*?\')(\s*,\s*([a-zA-Z\_\$][\w\$]*|".*?"|\'.*?\'))*)$/';
@@ -591,8 +591,16 @@ class JsonObject
                 }
             } else if (preg_match(self::RE_INDEX_LIST, $contents)) {
                 $index = array_map(
-                    function($x) {
-                        return intval(trim($x));
+                    function($x) use ($jsonObject){
+                        $i = intval(trim($x));
+                        if ($i < 0) {
+                            $n = count($jsonObject);
+                            $i = $i % $n;
+                            if ($i < 0) {
+                                $i += $n;
+                            }
+                        }
+                        return $i;
                     },
                     explode(self::TOK_COMA, $contents)
                 );

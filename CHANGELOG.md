@@ -1,5 +1,9 @@
 Changelog
 =========
+0.7.1
+-----
+* Bug fix when accessing an array with a negative index. It now behaves as expected.
+
 0.7
 ---
 * set now creates non-existent intermediate objects. 
