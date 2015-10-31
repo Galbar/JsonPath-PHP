@@ -27,7 +27,11 @@
     "autoload": {
         "psr-0": {
             "JsonPath\\": "src/Skyscanner/",
-            "Utilities\\": "src/Skyscanner/",
+            "Utilities\\": "src/Skyscanner/"
+        }
+    },
+    "autoload-dev": {
+        "psr-0": {
             "Tests\\": "tests/Skyscanner/"
         }
     }
