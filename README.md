@@ -95,7 +95,8 @@ JsonPath Language
 =================
 This library implements the following specification:
 ```
-number     = ([0-9]+(\.[0-9]*) | ([0-9]*\.[0-9]+))
+var_name    = [a-zA-Z\_\$][\w\$]*
+number      = ([0-9]+(\.[0-9]*) | ([0-9]*\.[0-9]+))
 string      = ('\''.*?'\'' | '"'.*?'"')
 boolean     = ('true' | 'false')
 regpattern  = '/'.*?'/'
@@ -107,11 +108,11 @@ childpath   = '@' operator*
 
 operator    = (childname | childfilter | recursive) operator*
 
-childname   = '.' (js_valid_name | '*')
-recursive   = '..' (js_valid_name | '*')
+childname   = '.' (var_name | '*')
+recursive   = '..' (var_name | '*')
 childfilter = '[' ('*' | namelist | indexlist | arrayslice | filterexpr) ']'
 
-namelist    = js_valid_name (',' (js_valid_name | '\'' .*? '\'' | '"' .*? '"'))*
+namelist    = var_name (',' (var_name | '\'' .*? '\'' | '"' .*? '"'))*
 indexlist   = index (',' index)*
 arrayslice  = index? ':' index? ':' index?
 filterexpr  = '?(' ors ')'
