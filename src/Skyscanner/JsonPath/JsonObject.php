@@ -115,7 +115,7 @@ class JsonObject
     // Array expressions
     const RE_ARRAY_INTERVAL = '/^(?:(-?\d*:-?\d*)|(-?\d*:-?\d*:-?\d*))$/';
     const RE_INDEX_LIST = '/^(-?\d+)(\s*,\s*-?\d+)*$/';
-    const RE_LENGTH = '/^(.*).length$/';
+    const RE_LENGTH = '/^(.*)\.length$/';
 
     // Object expression
     const RE_CHILD_NAME_LIST = '/^(:?([a-zA-Z\_\$][\w\$]*?|".*?"|\'.*?\')(\s*,\s*([a-zA-Z\_\$][\w\$]*|".*?"|\'.*?\'))*)$/';
@@ -477,8 +477,7 @@ class JsonObject
                 if ($result !== false) {
                     return false;
                 }
-            }
-            else {
+            } else {
                 if ($result === false) {
                     return false;
                 }
@@ -663,7 +662,6 @@ class JsonObject
 
     private function opRecursiveSelector(&$jsonObject, $childName, &$result)
     {
-        //$result[] = &$jsonObject;
         $this->opChildName($jsonObject, $childName, $result);
         if (is_array($jsonObject)) {
             foreach ($jsonObject as &$item) {

@@ -1,5 +1,15 @@
 Changelog
 =========
+0.7.3
+-----
+* Bug fix in `.length` regex.
+* Minor code cleanup.
+
+0.7.2
+-----
+* Documentation now properly defines what a variable name is.
+* Dependencies are now properly defined for older PHP versions.
+
 0.7.1
 -----
 * Bug fix when accessing an array with a negative index. It now behaves as expected.
