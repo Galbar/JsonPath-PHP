@@ -109,8 +109,8 @@ class JsonObject
     const RE_ROOT_OBJECT = '/^\$(.*)/';
 
     // Child regex
-    const RE_CHILD_NAME = '/^\.([a-zA-Z\_\$][\w\$]*|\*)(.*)/';
-    const RE_RECURSIVE_SELECTOR = '/^\.\.([a-zA-Z\_\$][\w\$]*|\*)(.*)/';
+    const RE_CHILD_NAME = '/^\.([a-zA-Z\_\$][\w\-\$]*|\*)(.*)/';
+    const RE_RECURSIVE_SELECTOR = '/^\.\.([a-zA-Z\_\$][\w\-\$]*|\*)(.*)/';
 
     // Array expressions
     const RE_ARRAY_INTERVAL = '/^(?:(-?\d*:-?\d*)|(-?\d*:-?\d*:-?\d*))$/';
@@ -118,7 +118,7 @@ class JsonObject
     const RE_LENGTH = '/^(.*)\.length$/';
 
     // Object expression
-    const RE_CHILD_NAME_LIST = '/^(:?([a-zA-Z\_\$][\w\$]*?|".*?"|\'.*?\')(\s*,\s*([a-zA-Z\_\$][\w\$]*|".*?"|\'.*?\'))*)$/';
+    const RE_CHILD_NAME_LIST = '/^(:?([a-zA-Z\_\$][\w\-\$]*?|".*?"|\'.*?\')(\s*,\s*([a-zA-Z\_\$][\w\-\$]*|".*?"|\'.*?\'))*)$/';
 
     // Conditional expressions
     const RE_COMPARISON = '/^(.+)\s*(==|!=|<=|>=|<|>|=\~)\s*(.+)$/';
