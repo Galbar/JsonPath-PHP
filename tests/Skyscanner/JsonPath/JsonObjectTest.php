@@ -61,7 +61,8 @@ class JsonPathTest extends \PHPUnit_Framework_TestCase
       "color": "red",
       "price": 19.95,
       "available": true,
-      "model": null
+      "model": null,
+      "sku-number": "BCCLE-0001-RD"
     }
   },
   "authors": [
@@ -140,12 +141,17 @@ class JsonPathTest extends \PHPUnit_Framework_TestCase
                 "$.store.bicycle.price"
             ),
             array(
+                array("BCCLE-0001-RD"),
+                "$.store.bicycle.sku-number"
+            ),
+            array(
                 array(
                     array(
                         "color" => "red",
                         "price" => 19.95,
                         "available" => true,
-                        "model" => null
+                        "model" => null,
+                        "sku-number" => "BCCLE-0001-RD"
                     )
                 ),
                 "$.store.bicycle"
@@ -220,7 +226,8 @@ class JsonPathTest extends \PHPUnit_Framework_TestCase
                     "red",
                     19.95,
                     true,
-                    null
+                    null,
+                    "BCCLE-0001-RD"
                 ),
                 "$.store.bicycle.*"
             ),
@@ -288,13 +295,13 @@ class JsonPathTest extends \PHPUnit_Framework_TestCase
                 array(
                     "red"
                 ),
-                "$..*[?(@.length <= 4)].color"
+                "$..*[?(@.length <= 5)].color"
             ),
             array(
                 array(
                     "red"
                 ),
-                "$..*[?(@.length <= 4.0)].color"
+                "$..*[?(@.length <= 5.0)].color"
             ),
             array(
                 array(
@@ -360,7 +367,8 @@ class JsonPathTest extends \PHPUnit_Framework_TestCase
                         "color" => "red",
                         "price" => 19.95,
                         "available" => true,
-                        "model" => null
+                        "model" => null,
+                        "sku-number" => "BCCLE-0001-RD"
                     )
                 ),
                 "$.store[?(@.*.length == 3)]",
@@ -417,7 +425,8 @@ class JsonPathTest extends \PHPUnit_Framework_TestCase
                     "color" => "red",
                     "price" => 19.95,
                     "available" => true,
-                    "model" => null
+                    "model" => null,
+                    "sku-number" => "BCCLE-0001-RD"
                 ),
                 "$.store.bicycle"
             ),
@@ -491,7 +500,8 @@ class JsonPathTest extends \PHPUnit_Framework_TestCase
                     "red",
                     19.95,
                     true,
-                    null
+                    null,
+                    "BCCLE-0001-RD"
                 ),
                 "$.store.bicycle.*"
             ),
@@ -559,13 +569,13 @@ class JsonPathTest extends \PHPUnit_Framework_TestCase
                 array(
                     "red"
                 ),
-                "$..*[?(@.length <= 4)].color"
+                "$..*[?(@.length <= 5)].color"
             ),
             array(
                 array(
                     "red"
                 ),
-                "$..*[?(@.length <= 4.0)].color"
+                "$..*[?(@.length <= 5.0)].color"
             ),
             array(
                 array(
@@ -631,7 +641,8 @@ class JsonPathTest extends \PHPUnit_Framework_TestCase
                         "color" => "red",
                         "price" => 19.95,
                         "available" => true,
-                        "model" => null
+                        "model" => null,
+                        "sku-number" => "BCCLE-0001-RD"
                     )
                 ),
                 "$.store[?(@.*.length == 3)]",
@@ -746,7 +757,8 @@ class JsonPathTest extends \PHPUnit_Framework_TestCase
                 'price' => 19.95,
                 'type' => 'BMX',
                 'available' => true,
-                'model' => null
+                'model' => null,
+                "sku-number" => "BCCLE-0001-RD"
             )
         );
         $expected = $smartGet ? $expected[0] : $expected;
@@ -794,7 +806,8 @@ class JsonPathTest extends \PHPUnit_Framework_TestCase
     ],
     "bicycle": {
       "color": "red",
-      "model": null
+      "model": null,
+      "sku-number": "BCCLE-0001-RD"
     }
   },
   "authors": [
