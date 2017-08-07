@@ -95,7 +95,7 @@ JsonPath Language
 =================
 This library implements the following specification:
 ```
-var_name    = [a-zA-Z\_\$][\w\$]*
+var_name    = [a-zA-Z\_\$][\w\-\$]*
 number      = ([0-9]+(\.[0-9]*) | ([0-9]*\.[0-9]+))
 string      = ('\''.*?'\'' | '"'.*?'"')
 boolean     = ('true' | 'false')
