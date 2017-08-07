@@ -7,13 +7,8 @@
     "authors": [
         {
             "name": "Alessio Linares",
-            "email": "alessio@alessio.cc",
-            "role": "Developer"
-        },
-        {
-            "name": "Tudor Barbu",
-            "email": "tudor.barbu@skyscanner.net",
-            "role": "Senior Developer"
+            "email": "alessio.linares@skyscanner.net",
+            "role": "Software Engineer"
         }
     ],
     "require": {

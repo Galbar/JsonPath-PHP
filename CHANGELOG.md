@@ -1,5 +1,9 @@
 Changelog
 =========
+0.8.0
+-----
+* Allows minus character within property name (by jaimelopez)
+
 0.7.3
 -----
 * Bug fix in `.length` regex.
