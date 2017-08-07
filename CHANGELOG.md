@@ -1,6 +1,6 @@
 Changelog
 =========
-0.8.0
+0.8
 -----
 * Allows minus character within property name (by jaimelopez)
 
