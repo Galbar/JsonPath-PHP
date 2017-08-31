@@ -242,11 +242,12 @@ class JsonObject
      * Returns the json object encoded as string.
      *
      *
+     * @param int $options [optional]
      * @return string
      */
-    public function getJson()
+    public function getJson($options = 0)
     {
-        return json_encode($this->jsonObject);
+        return json_encode($this->jsonObject, $options);
     }
 
     /**
