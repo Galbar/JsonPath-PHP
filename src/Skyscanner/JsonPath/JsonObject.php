@@ -240,12 +240,13 @@ class JsonObject
 
     /**
      * Returns the json object encoded as string.
+     * See http://php.net/manual/en/json.constants.php for more information on the $options bitmask.
      *
+     * @param int $options json_encode options bitmask
      *
-     * @param int $options [optional]
      * @return string
      */
-    public function getJson($options = 0)
+    public function getJson($options=0)
     {
         return json_encode($this->jsonObject, $options);
     }
