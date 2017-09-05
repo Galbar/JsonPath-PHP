@@ -846,7 +846,7 @@ class JsonPathTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedJson, $jsonObject->getJson());
     }
 
-    public function testGetJsonWith54OptionsBitmask()
+    public function testGetJsonWithOptionsBitmask()
     {
         if (version_compare(PHP_VERSION, '5.4', '>=')) {
             $jsonObject = new JsonObject();
@@ -868,22 +868,6 @@ $expectedJson = <<<EOF
 EOF;
             $this->assertEquals($expectedJson, $jsonObject->getJson(JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
         }
-    }
-
-    public function testGetJsonWith53OptionsBitmask()
-    {
-        if (version_compare(PHP_VERSION, '5.3', '>=')) {
-            $jsonObject = new JsonObject();
-            $jsonObject
-                ->add('$', '<foo>', 'foo')
-                ->add('$', "'bar'", 'bar')
-                ->add('$', '"baz"', 'baz')
-                ->add('$', '&blong&', 'blog')
-                ->add('$', "\xc3\xa9", 'utf');
-            $expectedJson = '{"foo":"\u003Cfoo\u003E","bar":"\u0027bar\u0027","baz":"\u0022baz\u0022","blog":"\u0026blong\u0026","utf":"\u00e9"}';
-            $this->assertEquals($expectedJson, $jsonObject->getJson(JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP));
-        }
-
     }
 
     public function testMagickMethods()
