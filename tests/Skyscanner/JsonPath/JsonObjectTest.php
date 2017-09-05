@@ -848,26 +848,24 @@ class JsonPathTest extends \PHPUnit_Framework_TestCase
 
     public function testGetJsonWithOptionsBitmask()
     {
-        if (version_compare(PHP_VERSION, '5.4', '>=')) {
-            $jsonObject = new JsonObject();
-            $jsonObject
-                ->add('$', 'Ö Kent C. Dodds', 'author')
-                ->add('$', 'À First Timers Only', 'title')
-                ->add('$', array(), 'volunteers')
-                ->add('$.volunteers[0]', 'Fayçal', 'name');
+        $jsonObject = new JsonObject();
+        $jsonObject
+            ->add('$', 'Ö Kent C. Dodds', 'author')
+            ->add('$', 'À First Timers Only', 'title')
+            ->add('$', array(), 'volunteers')
+            ->add('$.volunteers[0]', 'Fayçal', 'name');
 $expectedJson = <<<EOF
 {
-    "author": "Ö Kent C. Dodds",
-    "title": "À First Timers Only",
-    "volunteers": [
-        {
-            "name": "Fayçal"
-        }
-    ]
+"author": "Ö Kent C. Dodds",
+"title": "À First Timers Only",
+"volunteers": [
+    {
+        "name": "Fayçal"
+    }
+]
 }
 EOF;
-            $this->assertEquals($expectedJson, $jsonObject->getJson(JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
-        }
+        $this->assertEquals($expectedJson, $jsonObject->getJson(JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
     }
 
     public function testMagickMethods()
