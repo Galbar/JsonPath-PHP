@@ -834,6 +834,40 @@ class JsonPathTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('{"size":41,"color":"black","meta":{"code":65076}}', $jsonObject->getJson());
     }
 
+    public function testGetJsonWithoutOptionsBitmask()
+    {
+        $jsonObject = new JsonObject();
+        $jsonObject
+            ->add('$', 'Ö Kent C. Dodds', 'author')
+            ->add('$', 'À First Timers Only', 'title')
+            ->add('$', array(), 'volunteers')
+            ->add('$.volunteers[0]', 'Fayçal', 'name');
+        $expectedJson = '{"author":"\u00d6 Kent C. Dodds","title":"\u00c0 First Timers Only","volunteers":[{"name":"Fay\u00e7al"}]}';
+        $this->assertEquals($expectedJson, $jsonObject->getJson());
+    }
+
+    public function testGetJsonWithOptionsBitmask()
+    {
+        $jsonObject = new JsonObject();
+        $jsonObject
+            ->add('$', 'Ö Kent C. Dodds', 'author')
+            ->add('$', 'À First Timers Only', 'title')
+            ->add('$', array(), 'volunteers')
+            ->add('$.volunteers[0]', 'Fayçal', 'name');
+$expectedJson = <<<EOF
+{
+    "author": "Ö Kent C. Dodds",
+    "title": "À First Timers Only",
+    "volunteers": [
+        {
+            "name": "Fayçal"
+        }
+    ]
+}
+EOF;
+        $this->assertEquals($expectedJson, $jsonObject->getJson(JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+    }
+
     public function testMagickMethods()
     {
         $jsonObject = new JsonObject($this->json);
