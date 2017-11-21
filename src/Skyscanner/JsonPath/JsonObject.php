@@ -385,6 +385,17 @@ class JsonObject
         }
         return $this;
     }
+    
+   /**
+     * Sets value of smartGet property
+     * 
+     * @param bool $smartGet
+     * @return void
+     */
+    public function setSmartGet($smartGet)
+    {
+        $this->smartGet = $smartGet;
+    }
 
     private function expressionValue(&$jsonObject, $expression)
     {
