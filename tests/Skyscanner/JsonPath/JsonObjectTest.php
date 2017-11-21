@@ -956,4 +956,19 @@ EOF;
 
         $this->assertFalse($jsonObject->getJsonObjects('$.abc'));
     }
+
+    public function testSetSmartGet()
+    {
+        $jsonObject = new JsonObject($this->json);
+        $nodeValueArray = $jsonObject->get('$.store.bicycle.color');
+        $this->assertEquals(['red'],$nodeValueArray);
+
+        $jsonObject->setSmartGet(true);
+
+        $nodeValue = $jsonObject->get('$.store.bicycle.color');
+        $this->assertEquals('red',$nodeValue);
+        
+    }
+
+
 }
