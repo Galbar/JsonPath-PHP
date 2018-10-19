@@ -109,7 +109,7 @@ class JsonObject
     const RE_ROOT_OBJECT = '/^\$(.*)/';
 
     // Child regex
-    const RE_CHILD_NAME = '/^\.([a-zA-Z\_\$][\w\-\$]*|\*)(.*)/';
+    const RE_CHILD_NAME = '/^\.([a-zA-Z\d\_\$][\w\-\$]*|\*)(.*)/';
     const RE_RECURSIVE_SELECTOR = '/^\.\.([a-zA-Z\_\$][\w\-\$]*|\*)(.*)/';
 
     // Array expressions
