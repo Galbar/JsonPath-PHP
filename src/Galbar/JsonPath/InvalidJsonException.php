@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2015-2018 Skyscanner Limited
+ * Copyright 2018 Alessio Linares
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,26 +15,15 @@
  * limitations under the License.
  */
 
+
 namespace JsonPath;
 
 /**
- * Exception that is raised when a error is found in the given JSONPath
+ * Exception that is raised when a invalid value is given to the JsonObject
+ * constructor.
  *
  * @uses Exception
  */
-class InvalidJsonPathException extends \Exception
+class InvalidJsonException extends \Exception
 {
-    private $token;
-
-    /**
-     * Class constructor
-     *
-     * @param string $token token related to the JSONPath error
-     *
-     * @return void
-     */
-    public function __construct($token)
-    {
-        parent::__construct("Error in JSONPath near '" . $token . "'", 0, null);
-    }
 }

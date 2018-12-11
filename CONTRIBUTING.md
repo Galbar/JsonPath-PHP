@@ -1,5 +1,5 @@
 # Contributing to JsonPath
-We're glad you want to make a contribution!
+I'm glad you want to make a contribution!
 Fork this repository and send in a pull request when you're finished with your 
 changes. Link any relevant issues in too.  
 Take note of the build status of your pull request, only builds that pass will 
@@ -13,7 +13,7 @@ All files are released with the Apache 2.0 license.
 If you are adding a new file it should have a header like this:
 ```
 /**
- * Copyright [current year] Skyscanner Limited
+ * Copyright [current year] Alessio Linares
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
