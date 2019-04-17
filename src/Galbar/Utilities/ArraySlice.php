@@ -88,7 +88,7 @@ class ArraySlice
         }
     }
 
-    private static function sliceIndices($length, $start, $stop, $step)
+    public static function sliceIndices($length, $start, $stop, $step)
     {
         $result = array();
         self::adjustSlice($length, $start, $stop, $step);

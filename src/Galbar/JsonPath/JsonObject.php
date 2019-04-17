@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2018 Alessio Linares
+ * Copyright 2019 Alessio Linares
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
 namespace JsonPath;
 
 use Utilities\ArraySlice;
+use JsonPath\InternalRepr;
 use JsonPath\InvalidJsonException;
 use JsonPath\InvalidJsonPathException;
 
@@ -151,7 +152,7 @@ class JsonObject
     const TOK_FALSE = 'false';
     const TOK_NULL = 'null';
 
-    private $jsonObject = null;
+    private $data = null;
     private $smartGet = false;
     private $hasDiverged = false;
 
@@ -168,16 +169,16 @@ class JsonObject
     function __construct($json = null, $smartGet = false)
     {
         if ($json === null) {
-            $this->jsonObject = array();
+            $this->data = new InternalRepr(array());
         } else if (is_string($json)) {
-            $this->jsonObject = json_decode($json, true);
-            if ($this->jsonObject === null) {
+            $this->data = new InternalRepr(json_decode($json));
+            if ($this->data->getRaw() === null) {
                 throw new InvalidJsonException("string does not contain a valid JSON object.");
             }
         } else if (is_array($json)) {
-            $this->jsonObject = $json;
+            $this->data = new InternalRepr(json_decode(json_encode($json)));
         } else if (is_object($json)){
-            $this->jsonObject = json_decode(json_encode($json), true);
+            $this->data = new InternalRepr($json);
         } else {
             throw new InvalidJsonException("value does not encode a JSON object.");
         }
@@ -235,7 +236,7 @@ class JsonObject
      */
     public function &getValue()
     {
-        return $this->jsonObject;
+        return $this->data->getRaw();
     }
 
     /**
@@ -248,7 +249,7 @@ class JsonObject
      */
     public function getJson($options=0)
     {
-        return json_encode($this->jsonObject, $options);
+        return json_encode($this->data->getRaw(), $options);
     }
 
     /**
@@ -267,11 +268,18 @@ class JsonObject
     public function get($jsonPath)
     {
         $this->hasDiverged = false;
-        $result = $this->getReal($this->jsonObject, $jsonPath);
-        if ($this->smartGet && $result !== false && !$this->hasDiverged) {
-            return $result[0];
+        $result = $this->getReal($this->data, $jsonPath);
+        if ($result === false) {
+            return false;
         }
-        return $result;
+        if ($this->smartGet && !$this->hasDiverged) {
+            return $result[0]->getRaw();
+        }
+        $raw_result = array();
+        foreach($result as &$value) {
+            $raw_result[] = $value->getRaw();
+        }
+        return $raw_result;
     }
 
     /**
@@ -293,12 +301,12 @@ class JsonObject
     public function getJsonObjects($jsonPath)
     {
         $this->hasDiverged = false;
-        $result = $this->getReal($this->jsonObject, $jsonPath);
+        $result = $this->getReal($this->data, $jsonPath);
         if ($result !== false) {
             $objs = array();
             foreach($result as &$value) {
                 $jsonObject = new JsonObject(null, $this->smartGet);
-                $jsonObject->jsonObject = &$value;
+                $jsonObject->data = &$value;
                 $objs[] = $jsonObject;
             }
             if ($this->smartGet && !$this->hasDiverged) {
@@ -327,7 +335,7 @@ class JsonObject
      */
     public function set($jsonPath, $value)
     {
-        $result = $this->getReal($this->jsonObject, $jsonPath, true);
+        $result = $this->getReal($this->data, $jsonPath, true);
         if ($result !== false) {
             foreach ($result as &$element) {
                 $element = $value;
@@ -351,7 +359,7 @@ class JsonObject
      */
     public function add($jsonPath, $value, $field=null)
     {
-        $result = $this->getReal($this->jsonObject, $jsonPath, true);
+        $result = $this->getReal($this->data, $jsonPath, true);
         foreach ($result as &$element) {
             if (is_array($element)) {
                 if ($field == null) {
@@ -377,7 +385,7 @@ class JsonObject
      */
     public function remove($jsonPath, $field)
     {
-        $result = $this->getReal($this->jsonObject, $jsonPath);
+        $result = $this->getReal($this->data, $jsonPath);
         foreach ($result as &$element) {
             if (is_array($element)) {
                 unset($element[$field]);
@@ -408,26 +416,27 @@ class JsonObject
             }
             $result = false;
             if ($expression[0] === self::TOK_ROOT){
-                $result = $this->getReal($this->jsonObject, $expression);
+                $result = $this->getReal($this->data, $expression);
             }
             else if ($expression[0] === self::TOK_CHILD) {
                 $expression[0] = self::TOK_ROOT;
                 $result = $this->getReal($jsonObject, $expression);
             }
             if ($result !== false) {
+                $first = &$result[0];
                 if ($length) {
-                    if (is_array($result[0])) {
-                        return (float) count($result[0]);
+                    if ($first->isList()) {
+                        return (float) count($first->getRaw());
                     }
-                    if (is_string($result[0])) {
-                        return (float) strlen($result[0]);
+                    if (is_string($first->getRaw())) {
+                        return (float) strlen($first->getRaw());
                     }
                     return false;
                 }
-                if (is_float($result[0]) || is_int($result[0])) {
-                    $result[0] = (float) $result[0];
+                if (is_float($first->getRaw()) || is_int($first->getRaw())) {
+                    return (float) $first->getRaw();
                 }
-                return $result[0];
+                return $first;
             }
             return $result;
         }
@@ -540,17 +549,17 @@ class JsonObject
 
     private function opChildName(&$jsonObject, $childName, &$result, $createInexistent = false)
     {
-        if (is_array($jsonObject)) {
+        if ($jsonObject->isCollection()) {
             if ($childName === self::TOK_ALL) {
                 $this->hasDiverged = true;
-                foreach ($jsonObject as $key => $item) {
-                    $result[] = &$jsonObject[$key];
+                foreach ($jsonObject->items() as &$item) {
+                    $result[] = &$item[1];
                 }
-            } else if (array_key_exists($childName, $jsonObject)) {
-                $result[] = &$jsonObject[$childName];
+            } else if ($jsonObject->hasKey($childName)) {
+                $result[] = $jsonObject->get($childName);
             } else if ($createInexistent) {
-                $jsonObject[$childName] = array();
-                $result[] = &$jsonObject[$childName];
+                $jsonObject->set($childName, array());
+                $result[] = $jsonObject->get($childName);
             }
             return true;
         }
@@ -559,13 +568,13 @@ class JsonObject
 
     private function opChildSelector(&$jsonObject, $contents, &$result, $createInexistent = false)
     {
-        if (is_array($jsonObject)) {
+        if ($jsonObject->isCollection()) {
             $match = array();
             $contentsLen = strlen($contents);
             if ($contents === self::TOK_ALL) {
                 $this->hasDiverged = true;
-                foreach ($jsonObject as $key => $item) {
-                    $result[] = &$jsonObject[$key];
+                foreach ($jsonObject->items() as &$item) {
+                    $result[] = &$item[1];
                 }
             } else if (preg_match(self::RE_CHILD_NAME_LIST, $contents, $match)) {
                 $names = array_map(
@@ -581,21 +590,21 @@ class JsonObject
                 $names = array_filter(
                     $names,
                     function($x) use ($createInexistent, $jsonObject) {
-                        return $createInexistent || array_key_exists($x, $jsonObject);
+                        return $createInexistent || $jsonObject->hasKey($x);
                     }
                 );
                 foreach ($names as $name) {
-                    if (!array_key_exists($name, $jsonObject)) {
-                        $jsonObject[$name] = array();
+                    if (!$jsonObject->hasKey($name)) {
+                        $jsonObject->set($name, array());
                     }
-                    $result[] = &$jsonObject[$name];
+                    $result[] = $jsonObject->get($name);
                 }
-            } else if (preg_match(self::RE_INDEX_LIST, $contents)) {
+            } else if ($jsonObject->isList() && preg_match(self::RE_INDEX_LIST, $contents)) {
                 $index = array_map(
                     function($x) use ($jsonObject){
                         $i = intval(trim($x));
                         if ($i < 0) {
-                            $n = count($jsonObject);
+                            $n = count($jsonObject->getRaw());
                             $i = $i % $n;
                             if ($i < 0) {
                                 $i += $n;
@@ -612,16 +621,16 @@ class JsonObject
                 $index = array_filter(
                     $index,
                     function($x) use ($createInexistent, $jsonObject) {
-                        return $createInexistent || array_key_exists($x, $jsonObject);
+                        return $createInexistent || array_key_exists($x, $jsonObject->getRaw());
                     }
                 );
                 foreach ($index as $i) {
-                    if (!array_key_exists($i, $jsonObject)) {
-                        $jsonObject[$i] = array();
+                    if (!array_key_exists($i, $jsonObject->getRaw())) {
+                        $jsonObject->set($i, array());
                     }
-                    $result[] = &$jsonObject[$i];
+                    $result[] = $jsonObject->get($i);
                 }
-            } else if (preg_match(self::RE_ARRAY_INTERVAL, $contents, $match)) {
+            } else if ($jsonObject->isList() && preg_match(self::RE_ARRAY_INTERVAL, $contents, $match)) {
                 $this->hasDiverged = true;
                 $begin = null;
                 $step = null;
@@ -637,10 +646,13 @@ class JsonObject
                 $end = ($numbers[1] !== '' ? intval($numbers[1]) : $end);
                 $begin = ($numbers[0] !== '' ? intval($numbers[0]) : $begin);
 
-                $slice = ArraySlice::slice($jsonObject, $begin, $end, $step, true);
-                foreach ($slice as $i => $x) {
-                    if ($x !== null) {
-                        $result[] = &$slice[$i];
+                $data = $jsonObject->getRaw();
+                $indices = ArraySlice::sliceIndices(count($data), $begin, $end, $step);
+                foreach ($indices as $i) {
+                    $value = $jsonObject->get($i);
+                    if ($value !== null)
+                    {
+                        $result[] = $value;
                     }
                 }
             } else if ($contents[0] === self::TOK_BOOL_EXPR
@@ -649,9 +661,9 @@ class JsonObject
             ) {
                 $this->hasDiverged = true;
                 $subexpr = substr($contents, 2, $contentsLen - 3);
-                foreach ($jsonObject as &$child) {
-                    if ($this->booleanExpression($child, $subexpr)) {
-                        $result[] = &$child;
+                foreach ($jsonObject->items() as &$item) {
+                    if ($this->booleanExpression($item[1], $subexpr)) {
+                        $result[] = &$item[1];
                     }
                 }
             } else {
@@ -665,14 +677,14 @@ class JsonObject
     private function opRecursiveSelector(&$jsonObject, $childName, &$result)
     {
         $this->opChildName($jsonObject, $childName, $result);
-        if (is_array($jsonObject)) {
-            foreach ($jsonObject as &$item) {
-                $this->opRecursiveSelector($item, $childName, $result);
+        if ($jsonObject->isCollection()) {
+            foreach ($jsonObject->items() as &$item) {
+                $this->opRecursiveSelector($item[1], $childName, $result);
             }
         }
     }
 
-    private function getReal(&$jsonObject, $jsonPath, $createInexistent = false)
+    private function getReal($jsonObject, $jsonPath, $createInexistent = false)
     {
         $match = array();
         if (preg_match(self::RE_ROOT_OBJECT, $jsonPath, $match) === 0) {
@@ -680,10 +692,12 @@ class JsonObject
         }
 
         $jsonPath = $match[1];
-        $rootObjectPrev = &$this->jsonObject;
-        $this->jsonObject = &$jsonObject;
+        $rootObjectPrev = &$this->data;
+        $this->data = &$jsonObject;
         $selection = array(&$jsonObject);
+        //var_dump($selection);
         while (strlen($jsonPath) > 0 and count($selection) > 0) {
+            //var_dump($jsonPath);
             $newSelection = array();
             if (preg_match(self::RE_CHILD_NAME, $jsonPath, $match)) {
                 foreach ($selection as &$jsonObject) {
@@ -708,7 +722,9 @@ class JsonObject
                 }
             } else if (preg_match(self::RE_RECURSIVE_SELECTOR, $jsonPath, $match)) {
                 $this->hasDiverged = true;
-                $this->opRecursiveSelector($selection, $match[1], $newSelection);
+                foreach($selection as &$jsonObject) {
+                    $this->opRecursiveSelector($jsonObject, $match[1], $newSelection);
+                }
                 if (empty($newSelection)) {
                     $selection = false;
                     break;
@@ -719,9 +735,10 @@ class JsonObject
                 throw new InvalidJsonPathException($jsonPath);
             }
             $selection = $newSelection;
+            //var_dump($selection);
         }
 
-        $this->jsonObject = &$rootObjectPrev;
+        $this->data = &$rootObjectPrev;
         return $selection;
     }
 }
