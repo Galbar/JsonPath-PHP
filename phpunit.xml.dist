@@ -24,7 +24,7 @@
          bootstrap="tests/bootstrap.php"
 >
     <testsuites>
-        <testsuite name="Skyscanner\JsonPath" phpVersion="5.4.0"  phpVersionOperator=">=">
+        <testsuite name="Galbar\JsonPath" phpVersion="5.4.0"  phpVersionOperator=">=">
             <directory suffix=".php">./tests/</directory>
         </testsuite>
     </testsuites>
