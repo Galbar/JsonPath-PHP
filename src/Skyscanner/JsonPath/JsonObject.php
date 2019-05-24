@@ -111,6 +111,7 @@ class JsonObject
     // Child regex
     const RE_CHILD_NAME = '/^\.([a-zA-Z\_\$][\w\-\$]*|\*)(.*)/';
     const RE_RECURSIVE_SELECTOR = '/^\.\.([a-zA-Z\_\$][\w\-\$]*|\*)(.*)/';
+    const RE_PARENT_LENGTH = '/^\.length$/';
 
     // Array expressions
     const RE_ARRAY_INTERVAL = '/^(?:(-?\d*:-?\d*)|(-?\d*:-?\d*:-?\d*))$/';
@@ -688,6 +689,16 @@ class JsonObject
             if (preg_match(self::RE_CHILD_NAME, $jsonPath, $match)) {
                 foreach ($selection as &$jsonObject) {
                     $this->opChildName($jsonObject, $match[1], $newSelection, $createInexistent);
+                }
+                if(
+                    empty($newSelection) &&
+                    preg_match(self::RE_PARENT_LENGTH, $match[0], $lengthMatch)
+                ){
+                    if(is_array($jsonObject)){
+                        $newSelection = count($jsonObject);
+                    }else{
+                        $newSelection = strlen($jsonObject);
+                    }
                 }
                 if (empty($newSelection)) {
                     $selection = false;
