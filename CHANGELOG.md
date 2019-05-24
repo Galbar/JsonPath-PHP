@@ -1,7 +1,13 @@
 Changelog
 =========
+
+1.0
+---
+* Drop support for PHP 5.3
+* Adding json\_encode options bitmask (#7)
+
 0.8
------
+---
 * Allows minus character within property name (by jaimelopez)
 
 0.7.3

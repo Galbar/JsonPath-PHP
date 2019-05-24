@@ -1,13 +1,13 @@
 {
-    "name": "skyscanner/jsonpath",
+    "name": "galbar/jsonpath",
     "description": "JSONPath implementation for querying and updating JSON objects",
     "type": "library",
     "keywords": ["jsonpath", "json", "path"],
-    "license": "Apache 2.0",
+    "license": "Apache-2.0",
     "authors": [
         {
             "name": "Alessio Linares",
-            "email": "alessio.linares@skyscanner.net",
+            "email": "alessio@alessio.cc",
             "role": "Software Engineer"
         }
     ],
@@ -21,13 +21,13 @@
     },
     "autoload": {
         "psr-0": {
-            "JsonPath\\": "src/Skyscanner/",
-            "Utilities\\": "src/Skyscanner/"
+            "JsonPath\\": "src/Galbar/",
+            "Utilities\\": "src/Galbar/"
         }
     },
     "autoload-dev": {
         "psr-0": {
-            "Tests\\": "tests/Skyscanner/"
+            "Tests\\": "tests/Galbar/"
         }
     }
 }

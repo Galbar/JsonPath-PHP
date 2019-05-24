@@ -15,19 +15,15 @@
  * limitations under the License.
  */
 
-use Sami\Sami;
-use Symfony\Component\Finder\Finder;
 
-$iterator = Finder::create()
-    ->files()
-    ->name('*.php')
-    ->exclude('Resources')
-    ->exclude('Tests')
-    ->in(__DIR__ . '/../src/')
-;
+namespace JsonPath;
 
-return new Sami($iterator, array(
-    'theme'               => 'default',
-    'title'               => 'JsonPath',
-    'build_dir'           => __DIR__ . './../docs',
-));
+/**
+ * Exception that is raised when a invalid value is given to the JsonObject
+ * constructor.
+ *
+ * @uses Exception
+ */
+class InvalidJsonException extends \Exception
+{
+}
