@@ -694,10 +694,22 @@ class JsonObject
                     empty($newSelection) &&
                     preg_match(self::RE_PARENT_LENGTH, $match[0], $lengthMatch)
                 ){
-                    if(is_array($jsonObject)){
-                        $newSelection = count($jsonObject);
-                    }else{
-                        $newSelection = strlen($jsonObject);
+                    if(count($selection) > 1){
+                        $newSelection = [];
+                        /** .length of each array/string in array of arrays $item */
+                        foreach ($selection as $item) {
+                            if(is_array($item)){
+                                array_push($newSelection,count($item));
+                            }else{
+                                array_push($newSelection,strlen($item));
+                            }
+                        }
+                    }elseif(count($selection) == 1){
+                        if(is_array($selection[0])){
+                            $newSelection = count($selection[0]);
+                        }else{
+                            $newSelection = strlen($selection[0]);
+                        }
                     }
                 }
                 if (empty($newSelection)) {
