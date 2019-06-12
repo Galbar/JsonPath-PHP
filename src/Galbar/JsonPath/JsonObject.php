@@ -250,6 +250,16 @@ class JsonObject
     {
         return json_encode($this->jsonObject, $options);
     }
+    
+    /**
+     * Returns the private json object as array
+     *
+     * @return array
+     */
+    public function getArray()
+    {
+        return $this->jsonObject;
+    }
 
     /**
      * Returns an array containing references to the
