@@ -118,7 +118,7 @@ class JsonObject
     const RE_LENGTH = '/^(.*)\.length$/';
 
     // Object expression
-    const RE_CHILD_NAME_LIST = '/^(:?([\w\_\$^\d][\w\-\$]*?|".*?"|\'.*?\')(\s*,\s*([\w\_\$^\w][\w\-\$]*|".*?"|\'.*?\'))*)$/u';
+    const RE_CHILD_NAME_LIST = '/^(:?([\w\_\$^\d][\w\-\$]*?|".*?"|\'.*?\')(\s*,\s*([\w\_\$^\d][\w\-\$]*|".*?"|\'.*?\'))*)$/u';
 
     // Conditional expressions
     const RE_COMPARISON = '/^(.+)\s*(==|!=|<=|>=|<|>|=\~)\s*(.+)$/';
