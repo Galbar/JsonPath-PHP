@@ -388,30 +388,30 @@ class JsonObject
 
     private function expressionValue(&$jsonObject, $expression)
     {
-        if ($expression === self::TOK_NULL) {
+        if ($expression === static::TOK_NULL) {
             return null;
-        } else if ($expression === self::TOK_TRUE) {
+        } else if ($expression === static::TOK_TRUE) {
             return true;
-        } else if ($expression === self::TOK_FALSE) {
+        } else if ($expression === static::TOK_FALSE) {
             return false;
         } else if (is_numeric($expression)) {
             return floatval($expression);
-        } else if (preg_match(self::RE_STRING, $expression)) {
+        } else if (preg_match(static::RE_STRING, $expression)) {
             return substr($expression, 1, strlen($expression) - 2);
-        } else if (preg_match(self::RE_REGEX_EXPR, $expression)) {
+        } else if (preg_match(static::RE_REGEX_EXPR, $expression)) {
             return $expression;
         } else {
             $match = array();
-            $length = preg_match(self::RE_LENGTH, $expression, $match);
+            $length = preg_match(static::RE_LENGTH, $expression, $match);
             if ($length) {
                 $expression = $match[1];
             }
             $result = false;
-            if ($expression[0] === self::TOK_ROOT){
+            if ($expression[0] === static::TOK_ROOT){
                 $result = $this->getReal($this->jsonObject, $expression);
             }
-            else if ($expression[0] === self::TOK_CHILD) {
-                $expression[0] = self::TOK_ROOT;
+            else if ($expression[0] === static::TOK_CHILD) {
+                $expression[0] = static::TOK_ROOT;
                 $result = $this->getReal($jsonObject, $expression);
             }
             if ($result !== false) {
@@ -437,19 +437,19 @@ class JsonObject
     {
         $left = $this->expressionValue($jsonObject, trim($leftExpr));
         $right = $this->expressionValue($jsonObject, trim($rightExpr));
-        if ($comparator === self::TOK_COMP_EQ) {
+        if ($comparator === static::TOK_COMP_EQ) {
             return $left === $right;
-        } else if ($comparator === self::TOK_COMP_NEQ) {
+        } else if ($comparator === static::TOK_COMP_NEQ) {
             return $left !== $right;
-        } else if ($comparator === self::TOK_COMP_LT) {
+        } else if ($comparator === static::TOK_COMP_LT) {
             return $left < $right;
-        } else if ($comparator === self::TOK_COMP_GT) {
+        } else if ($comparator === static::TOK_COMP_GT) {
             return $left > $right;
-        } else if ($comparator === self::TOK_COMP_LTE) {
+        } else if ($comparator === static::TOK_COMP_LTE) {
             return $left <= $right;
-        } else if ($comparator === self::TOK_COMP_GTE) {
+        } else if ($comparator === static::TOK_COMP_GTE) {
             return $left >= $right;
-        } else { // $comparator === self::TOK_COMP_RE_MATCH
+        } else { // $comparator === static::TOK_COMP_RE_MATCH
             if (is_string($right) && is_string($left)) {
                 return (bool) preg_match($right, $left);
             }
@@ -459,17 +459,17 @@ class JsonObject
 
     private function booleanExpressionAnds(&$jsonObject, $expression)
     {
-        $values = preg_split(self::RE_AND, $expression);
+        $values = preg_split(static::RE_AND, $expression);
         $match = array();
         foreach ($values as $subexpr) {
             $not = false;
-            if (preg_match(self::RE_NOT, $subexpr, $match)) {
+            if (preg_match(static::RE_NOT, $subexpr, $match)) {
                 $subexpr = $match[1];
                 $not = true;
             }
 
             $result = false;
-            if (preg_match(self::RE_COMPARISON, $subexpr, $match)) {
+            if (preg_match(static::RE_COMPARISON, $subexpr, $match)) {
                 $result = $this->booleanExpressionComparison($jsonObject, $match[1], $match[2], $match[3]);
             }
             else {
@@ -490,7 +490,7 @@ class JsonObject
 
     private function booleanExpression(&$jsonObject, $expression)
     {
-        $ands = preg_split(self::RE_OR, $expression);
+        $ands = preg_split(static::RE_OR, $expression);
         foreach ($ands as $subexpr) {
             if ($this->booleanExpressionAnds($jsonObject, $subexpr)) {
                 return true;
@@ -501,7 +501,7 @@ class JsonObject
 
     private function matchValidExpression($jsonPath, &$result, $offset=0)
     {
-        if ($jsonPath[$offset] != self::TOK_SELECTOR_BEGIN) {
+        if ($jsonPath[$offset] != static::TOK_SELECTOR_BEGIN) {
             return false;
         }
         $initialOffset = $offset;
@@ -511,15 +511,15 @@ class JsonObject
         // $count is a reference to the counter of the $startChar type
         $match = array();
         while ($bracesCount > 0 and $parenCount >= 0) {
-            if (preg_match(self::RE_NEXT_SUBEXPR, $jsonPath, $match,  PREG_OFFSET_CAPTURE, $offset)) {
+            if (preg_match(static::RE_NEXT_SUBEXPR, $jsonPath, $match,  PREG_OFFSET_CAPTURE, $offset)) {
                 $c = $match[1][0];
-                if ($c === self::TOK_EXPRESSION_BEGIN) {
+                if ($c === static::TOK_EXPRESSION_BEGIN) {
                     $parenCount += 1;
-                } else if ($c === self::TOK_EXPRESSION_END) {
+                } else if ($c === static::TOK_EXPRESSION_END) {
                     $parenCount -= 1;
-                } else if ($c === self::TOK_SELECTOR_BEGIN) {
+                } else if ($c === static::TOK_SELECTOR_BEGIN) {
                     $bracesCount += 1;
-                } else if ($c === self::TOK_SELECTOR_END) {
+                } else if ($c === static::TOK_SELECTOR_END) {
                     $bracesCount -= 1;
                 }
                 $offset = $match[1][1] + 1;
@@ -541,7 +541,7 @@ class JsonObject
     private function opChildName(&$jsonObject, $childName, &$result, $createInexistent = false)
     {
         if (is_array($jsonObject)) {
-            if ($childName === self::TOK_ALL) {
+            if ($childName === static::TOK_ALL) {
                 $this->hasDiverged = true;
                 foreach ($jsonObject as $key => $item) {
                     $result[] = &$jsonObject[$key];
@@ -562,17 +562,17 @@ class JsonObject
         if (is_array($jsonObject)) {
             $match = array();
             $contentsLen = strlen($contents);
-            if ($contents === self::TOK_ALL) {
+            if ($contents === static::TOK_ALL) {
                 $this->hasDiverged = true;
                 foreach ($jsonObject as $key => $item) {
                     $result[] = &$jsonObject[$key];
                 }
-            } else if (preg_match(self::RE_CHILD_NAME_LIST, $contents, $match)) {
+            } else if (preg_match(static::RE_CHILD_NAME_LIST, $contents, $match)) {
                 $names = array_map(
                     function($x) {
                         return trim($x, " \t\n\r\0\x0B'\"");
                     },
-                    explode(self::TOK_COMA, $contents)
+                    explode(static::TOK_COMA, $contents)
                 );
                 if (count($names) > 1) {
                     $this->hasDiverged = true;
@@ -590,7 +590,7 @@ class JsonObject
                     }
                     $result[] = &$jsonObject[$name];
                 }
-            } else if (preg_match(self::RE_INDEX_LIST, $contents)) {
+            } else if (preg_match(static::RE_INDEX_LIST, $contents)) {
                 $index = array_map(
                     function($x) use ($jsonObject){
                         $i = intval(trim($x));
@@ -603,7 +603,7 @@ class JsonObject
                         }
                         return $i;
                     },
-                    explode(self::TOK_COMA, $contents)
+                    explode(static::TOK_COMA, $contents)
                 );
                 if (count($index) > 1) {
                     $this->hasDiverged = true;
@@ -621,13 +621,13 @@ class JsonObject
                     }
                     $result[] = &$jsonObject[$i];
                 }
-            } else if (preg_match(self::RE_ARRAY_INTERVAL, $contents, $match)) {
+            } else if (preg_match(static::RE_ARRAY_INTERVAL, $contents, $match)) {
                 $this->hasDiverged = true;
                 $begin = null;
                 $step = null;
                 $end = null;
                 // end($match) has the matched group with the interval
-                $numbers = explode(self::TOK_COLON, end($match));
+                $numbers = explode(static::TOK_COLON, end($match));
                 // $numbers has the different numbers of the interval
                 // depending on if there are 2 (begin:end) or 3 (begin:end:step)
                 // numbers $begin, $step, $end are reassigned
@@ -643,9 +643,9 @@ class JsonObject
                         $result[] = &$slice[$i];
                     }
                 }
-            } else if ($contents[0] === self::TOK_BOOL_EXPR
-                && $contents[1] === self::TOK_EXPRESSION_BEGIN
-                && $contents[$contentsLen - 1] === self::TOK_EXPRESSION_END
+            } else if ($contents[0] === static::TOK_BOOL_EXPR
+                && $contents[1] === static::TOK_EXPRESSION_BEGIN
+                && $contents[$contentsLen - 1] === static::TOK_EXPRESSION_END
             ) {
                 $this->hasDiverged = true;
                 $subexpr = substr($contents, 2, $contentsLen - 3);
@@ -675,7 +675,7 @@ class JsonObject
     private function getReal(&$jsonObject, $jsonPath, $createInexistent = false)
     {
         $match = array();
-        if (preg_match(self::RE_ROOT_OBJECT, $jsonPath, $match) === 0) {
+        if (preg_match(static::RE_ROOT_OBJECT, $jsonPath, $match) === 0) {
             throw new InvalidJsonPathException($jsonPath);
         }
 
@@ -685,7 +685,7 @@ class JsonObject
         $selection = array(&$jsonObject);
         while (strlen($jsonPath) > 0 and count($selection) > 0) {
             $newSelection = array();
-            if (preg_match(self::RE_CHILD_NAME, $jsonPath, $match)) {
+            if (preg_match(static::RE_CHILD_NAME, $jsonPath, $match)) {
                 foreach ($selection as &$jsonObject) {
                     $this->opChildName($jsonObject, $match[1], $newSelection, $createInexistent);
                 }
@@ -706,7 +706,7 @@ class JsonObject
                 } else {
                     $jsonPath = $match[1];
                 }
-            } else if (preg_match(self::RE_RECURSIVE_SELECTOR, $jsonPath, $match)) {
+            } else if (preg_match(static::RE_RECURSIVE_SELECTOR, $jsonPath, $match)) {
                 $this->hasDiverged = true;
                 $this->opRecursiveSelector($selection, $match[1], $newSelection);
                 if (empty($newSelection)) {
