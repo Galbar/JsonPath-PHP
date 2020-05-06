@@ -136,7 +136,11 @@ __The `.length` operator__ can be used to:
 * Get the number of childs a node in the JsonObject has: `$..*[?(@.length > 3)]`
 * Filter for nodes that have childs: `$..*[?(@.length)]`
 * Or filter for nodes that don't have childs (leaves): `$..*[?(not @.length)]`
-* Get the length of a string: `$.path.to[?(@.a.string.length > 10)]`
+* Check the length of a string: `$.path.to[?(@.a.string.length > 10)]`
+* Get the length of a string: `$.path.to.field.length`
+* Get the length of an array: `$.path.to.array.length`
+* Get the length of each array inside an array of arrays: `$.path.to.array[*].array[*].length`
+* Get the length of each string inside an array of strings: `$.path.to.array[*].array[*].key.length`
 
 __The comparators__:  
 `==`, `!=`, `<`, `>`, `<=`, `>=` do what expected (compare by type and value).  
