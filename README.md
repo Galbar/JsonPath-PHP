@@ -64,7 +64,7 @@ $str = (string)$obj;
 echo $obj;
 
 // get the PHP array representation
-$obj->getArray();
+$obj->getValue();
 
 // add values
 $obj->add($jsonPath, $value[, $field]);
