@@ -200,8 +200,8 @@ JsonPath | Result
 `$.store.bicycle.price` | The price of the bicycle.
 `$.store.book[*]` | All books.
 `$.store.book[1,3]` | The second and fourth book.
-`$.store.book[1:3]` | From the second book to the fourth.
-`$.store.book[:2]` | From the first book to the third.
+`$.store.book[1:3]` | From the second book to the third.
+`$.store.book[:3]` | From the first book to the third.
 `$.store.book[x:y:z]` | Books from x to y with a step of z.
 `$..book[?(@.category == 'fiction')]` | All books with category == 'fiction'.
 `$..*[?(@.available == true)].price` | All prices of available products.
