@@ -1,6 +1,13 @@
 Changelog
 =========
 
+1.1
+---
+* Drop support for PHP 5.4 and 5.5
+* Add support for PHP 7.2 and 7.3
+* Add utf-8 support (#33)
+* Ability to use .length outside of [] (#28)
+
 1.0
 ---
 * Drop support for PHP 5.3
