@@ -126,8 +126,8 @@ class JsonObject
     const RE_STRING = '/^(?:\'(.*)\'|"(.*)")$/';
     const RE_REGEX_EXPR = '/^\/.*\/$/';
     const RE_NEXT_SUBEXPR = '/.*?(\(|\)|\[|\])/';
-    const RE_OR = '/\s+or\s+/';
-    const RE_AND = '/\s+and\s+/';
+    const RE_OR = '/\s+(or|\|\|)\s+/';
+    const RE_AND = '/\s+(and|&&)\s+/';
     const RE_NOT = '/^not\s+(.*)/';
 
     // Tokens
