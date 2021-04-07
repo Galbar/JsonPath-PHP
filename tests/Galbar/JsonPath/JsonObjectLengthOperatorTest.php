@@ -22,7 +22,7 @@ use JsonPath\InvalidJsonException;
 
 /**
  * Class JsonObjectLengthOperatorTest
- * @authr Sergey Nikolaev
+ * @author Sergey Nikolaev
  */
 class JsonObjectLengthOperatorTest extends \PHPUnit_Framework_TestCase
 {
