@@ -627,6 +627,12 @@ class JsonPathTest extends \PHPUnit_Framework_TestCase
                 array(
                     8.95
                 ),
+                "$.store.book[?(! @.category == 'fiction')].price"
+            ),
+            array(
+                array(
+                    8.95
+                ),
                 "$.store.book[?(@.category != 'fiction')].price"
             ),
             array(
@@ -645,7 +651,19 @@ class JsonPathTest extends \PHPUnit_Framework_TestCase
                 array(
                     true
                 ),
+                "$.store[?(! @..price or @..color == 'red')].available"
+            ),
+            array(
+                array(
+                    true
+                ),
                 "$.store[?(not @..price || @..color == 'red')].available"
+            ),
+            array(
+                array(
+                    true
+                ),
+                "$.store[?(! @..price || @..color == 'red')].available"
             ),
             array(
                 false,

@@ -118,9 +118,9 @@ indexlist   = index (',' index)*
 arrayslice  = index? ':' index? ':' index?
 filterexpr  = '?(' ors ')'
 
-ors         = ands (' ' (or|\|\|) ' ' ands)*
-ands        = expr (' ' (and|&&) ' ' expr)*
-expr        = 'not'? (value | comp)
+ors         = ands (' ' ( 'or' | '\|\|' ) ' ' ands)*
+ands        = expr (' ' ( 'and'| '&&' ) ' ' expr)*
+expr        = ( 'not ' | '! ' )? (value | comp)
 comp        = value ('==' | '!=' | '<' | '>' | '<=' | '>=' | '=~') value
 value       = (jsonpath | childpath | number | string | boolean | regpattern | null | length)
 length      = (jsonpath | childpath) '.length'
