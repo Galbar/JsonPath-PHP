@@ -128,7 +128,7 @@ class JsonObject
     const RE_NEXT_SUBEXPR = '/.*?(\(|\)|\[|\])/';
     const RE_OR = '/\s+(or|\|\|)\s+/';
     const RE_AND = '/\s+(and|&&)\s+/';
-    const RE_NOT = '/^not\s+(.*)/';
+    const RE_NOT = '/^(not|!)\s+(.*)/';
 
     // Tokens
     const TOK_ROOT = '$';
@@ -465,7 +465,7 @@ class JsonObject
         foreach ($values as $subexpr) {
             $not = false;
             if (preg_match(self::RE_NOT, $subexpr, $match)) {
-                $subexpr = $match[1];
+                $subexpr = $match[2];
                 $not = true;
             }
 
