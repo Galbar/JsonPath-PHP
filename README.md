@@ -1,3 +1,4 @@
+
 JsonPath
 ========
 [![Build Status](https://travis-ci.org/Galbar/JsonPath-PHP.svg)](https://travis-ci.org/Galbar/JsonPath-PHP)
@@ -222,6 +223,12 @@ For example:
 `php app/test.php "$..*[?(@.category == 'fiction' and @.price < 10 or @.color == \"red\")].price"`  
 Result should be:  
 `[19.95,8.99]`
+
+Ready to code
+=============
+you can open the project in your browser and can start coding
+[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/Galbar/JsonPath-PHP)
+
 
 Docs
 ====
