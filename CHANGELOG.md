@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.2
+---
+* Add `!` as synonym of `not`
+* Add `&&` as synonym of `and`
+* Add `||` as synonym of `or`
+
 1.1
 ---
 * Drop support for PHP 5.4 and 5.5
