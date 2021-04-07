@@ -119,7 +119,7 @@ arrayslice  = index? ':' index? ':' index?
 filterexpr  = '?(' ors ')'
 
 ors         = ands (' ' ( 'or' | '\|\|' ) ' ' ands)*
-ands        = expr (' ' ( 'and'| '&&' ) ' ' expr)*
+ands        = expr (' ' ( 'and' | '&&' ) ' ' expr)*
 expr        = ( 'not ' | '! ' )? (value | comp)
 comp        = value ('==' | '!=' | '<' | '>' | '<=' | '>=' | '=~') value
 value       = (jsonpath | childpath | number | string | boolean | regpattern | null | length)

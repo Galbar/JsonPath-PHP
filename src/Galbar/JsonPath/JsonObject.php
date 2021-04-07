@@ -465,7 +465,7 @@ class JsonObject
         foreach ($values as $subexpr) {
             $not = false;
             if (preg_match(self::RE_NOT, $subexpr, $match)) {
-                $subexpr = $match[1];
+                $subexpr = $match[2];
                 $not = true;
             }
 
