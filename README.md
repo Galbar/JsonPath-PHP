@@ -126,7 +126,7 @@ value       = (jsonpath | childpath | number | string | boolean | regpattern | n
 length      = (jsonpath | childpath) '.length'
 ```
 
-__Limitations__ on the specification:  
+### Limitations on the specification:  
 * The jsonpath inside _value_ cannot contain `or`, `and` or any comparator.
 * Jsonpaths in _value_ return the first element of the set or false if no result.
 * Boolean operations can't be grouped with parethesis.
