@@ -26,18 +26,18 @@ This implementation has the following features:
     * `__toString`: `echo $obj` prints the json representation of the JsonObject.
 * Not using `eval()`.
 
+Installation
+=====
+
+To install JsonPath you will need to be using Composer in your project. To install it please see the [docs](https://getcomposer.org/download/).
+
+```
+composer require galbar/jsonpath
+```
+
+
 Usage
 =====
-Add the following code to your composer.json. Use `dev-master` for the bleeding edge version or [![Latest Stable Version](https://poser.pugx.org/galbar/jsonpath/v/stable)](https://packagist.org/packages/galbar/jsonpath)
-
-```
-"require": {
-    "galbar/jsonpath": "dev-master"
-}
-```
-
-Run `composer update`.
-
 In every file you use it add:  
 ```
 use JsonPath\JsonObject;
