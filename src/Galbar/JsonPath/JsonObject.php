@@ -108,6 +108,9 @@ class JsonObject
     // Root regex
     const RE_ROOT_OBJECT = '/^\$(.*)/';
 
+    // Multiple roots regex
+    const RE_ROOT_SET = '/^\[\$(.*)\]/';
+
     // Child regex
     const RE_CHILD_NAME = '/^\.([\w\_\$^\d][\w\-\$]*|\*)(.*)/u';
     const RE_RECURSIVE_SELECTOR = '/^\.\.([\w\_\$^\d][\w\-\$]*|\*)(.*)/u';
@@ -746,5 +749,159 @@ class JsonObject
 
         $this->jsonObject = &$rootObjectPrev;
         return $selection;
+    }
+
+    /**
+     * @param $jsonPath
+     * @return array
+     * @throws InvalidJsonPathException
+     */
+    public function getTable($jsonPath)
+    {
+        $match = array();
+        if (preg_match(self::RE_ROOT_SET, $jsonPath, $match) === 0) {
+            throw new InvalidJsonPathException($jsonPath);
+        }
+        $jsonPaths = explode(',$', $match[1]);
+        return $this->getRealMulti($this->jsonObject, $jsonPaths);
+    }
+
+    /**
+     * @param $jsonObject
+     * @param array $jsonPaths
+     * @return array
+     * @throws InvalidJsonPathException
+     */
+    private function getRealMulti(&$jsonObject, array $jsonPaths)
+    {
+        $originalPaths = $jsonPaths;
+        $sortKeys = $this->getPathSortKeys($jsonPaths);
+        $jsonPaths = array_combine(array_keys($sortKeys), $jsonPaths);
+        ksort($jsonPaths);
+        $pathTree = [];
+        foreach ($jsonPaths as $jsonPath) {
+            $pathTree = array_merge_recursive($pathTree, $this->getPathTree('$' . $jsonPath));
+        }
+        $rows = array();
+        $rowSize = count($jsonPaths);
+        ksort($sortKeys);
+        $this->iteratePathTree($jsonObject, $pathTree, $rows, $rowSize, $originalPaths);
+        return $rows;
+    }
+
+    /**
+     * @param $jsonPath
+     * @return array|mixed
+     * @throws InvalidJsonPathException
+     */
+    function getPathTree($jsonPath, $flat = false)
+    {
+        $match = array();
+        if (preg_match(self::RE_ROOT_OBJECT, $jsonPath, $match) === 0) {
+            throw new InvalidJsonPathException($jsonPath);
+        }
+        $jsonPath = $match[1];
+        $selectionPath = [];
+        $selectionPathItem = &$selectionPath;
+        $deep = 1000;
+        while (strlen($jsonPath) > 0) {
+            if (--$deep < 1) {
+                throw new \Exception("Infinite loop protection");
+            }
+            $initialPath = $jsonPath;
+            $jsonPath = $this->getPathArray($jsonPath);
+            $nextPath = $jsonPath == '' ? $initialPath : substr($initialPath, 0, -strlen($jsonPath));
+            if ($flat) {
+                $selectionPath[] = $nextPath;
+            } else {
+                $selectionPathItem[$nextPath] = [];
+                $selectionPathItem = &$selectionPathItem[$nextPath];
+            }
+        }
+
+        return $selectionPath;
+    }
+
+    /**
+     * @param $jsonPath
+     * @return array
+     * @throws InvalidJsonPathException
+     */
+    private function getPathArray($jsonPath)
+    {
+        $match = [];
+        if (preg_match(self::RE_CHILD_NAME, $jsonPath, $match)) {
+            $jsonPath = $match[2];
+        } else if ($this->matchValidExpression($jsonPath, $match)) {
+            $jsonPath = $match[1];
+        } else if (preg_match(self::RE_RECURSIVE_SELECTOR, $jsonPath, $match)) {
+            $jsonPath = $match[2];
+        } else {
+            throw new InvalidJsonPathException($jsonPath);
+        }
+        return $jsonPath;
+    }
+
+    /**
+     * @param $jsonObject
+     * @param array $pathTree
+     * @throws InvalidJsonPathException
+     */
+    private function iteratePathTree(&$jsonObject, array $pathTree, &$rows, $rowSize, $sortKeys, $currentRow = array(), $currentPath = '')
+    {
+        $currentPathOrig = $currentPath;
+        foreach ($pathTree as $path => $subTree) {
+            $currentPath = $currentPathOrig . $path;
+            $elements = $this->getReal($jsonObject,  '$'.$path);
+
+            if (($elements === false || count($elements) === 0) && !empty($currentRow)) {
+                foreach ($sortKeys as $sortKey => $keyPath) {
+                    if ($keyPath == $currentPath) {
+                        $currentRow[$sortKey] = null;
+                        if (count($currentRow) == $rowSize) {
+                            $rows[] = $currentRow;
+                        }
+                    }
+                }
+            } else {
+                $currentRowIteration = $currentRow;
+                foreach ($elements as $element) {
+                    $currentRowIteration = $currentRow;
+                    if (empty($subTree)) {
+                        // leaf node
+                        foreach ($sortKeys as $sortKey => $keyPath) {
+                            if ($keyPath == $currentPath) {
+                                $currentRowIteration[$sortKey] = $element;
+                                if (count($currentRowIteration) == $rowSize) {
+                                    $rows[] = $currentRowIteration;
+                                }
+
+                            }
+                        }
+                    } else {
+                        // sub nodes
+                        $this->iteratePathTree($element, $subTree, $rows, $rowSize, $sortKeys, $currentRow, $currentPath);
+                    }
+                }
+                $currentRow = $currentRowIteration;
+            }
+
+
+        }
+    }
+
+    private function getPathSortKeys(array $jsonPaths)
+    {
+        $shortPaths = [];
+        foreach ($jsonPaths as $jsonPath) {
+            $array = $this->getPathTree('$'.$jsonPath, true);
+            array_pop($array);
+            $shortPaths[] = implode('', $array);
+        }
+        asort($shortPaths);
+        $sortKeys = array_keys($shortPaths);
+        array_flip($sortKeys);
+        asort($sortKeys);
+        return $sortKeys;
     }
 }
