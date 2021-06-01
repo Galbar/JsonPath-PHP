@@ -22,7 +22,7 @@ use JsonPath\Language;
 
 class IndexList
 {
-    public static function eval(&$partial, $indexes, $createInexistent = false) {
+    public static function evaluate(&$partial, $indexes, $createInexistent = false) {
         $indexes = array_map(
             function($i) use ($partial) {
                 if ($i < 0) {

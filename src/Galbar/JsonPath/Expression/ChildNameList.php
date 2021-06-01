@@ -22,7 +22,7 @@ use JsonPath\Language;
 
 class ChildNameList
 {
-    public static function eval(&$partial, $names, $createInexistent = false) {
+    public static function evaluate(&$partial, $names, $createInexistent = false) {
         $names = array_filter(
             $names,
             function($x) use ($createInexistent, $partial) {

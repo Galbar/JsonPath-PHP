@@ -22,7 +22,7 @@ use JsonPath\Language;
 
 class BooleanExpression
 {
-    public static function eval(&$root, &$partial, $expression)
+    public static function evaluate(&$root, &$partial, $expression)
     {
         $ands = preg_split(Language\Regex::BINOP_OR, $expression);
         foreach ($ands as $subexpr) {
@@ -46,10 +46,10 @@ class BooleanExpression
 
             $result = false;
             if (preg_match(Language\Regex::BINOP_COMP, $subexpr, $match)) {
-                $result = Comparison::eval($root, $partial, $match[1], $match[2], $match[3]);
+                $result = Comparison::evaluate($root, $partial, $match[1], $match[2], $match[3]);
             }
             else {
-                $result = Value::eval($root, $partial, $subexpr);
+                $result = Value::evaluate($root, $partial, $subexpr);
             }
             if ($not) {
                 if ($result !== false) {

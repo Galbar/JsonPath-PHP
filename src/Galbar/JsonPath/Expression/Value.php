@@ -23,7 +23,7 @@ use JsonPath\Operation;
 
 class Value
 {
-    public static function eval(&$root, &$partial, $expression)
+    public static function evaluate(&$root, &$partial, $expression)
     {
         if ($expression === Language\Token::VAL_NULL) {
             return null;

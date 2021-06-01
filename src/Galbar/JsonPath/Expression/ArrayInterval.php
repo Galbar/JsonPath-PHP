@@ -23,7 +23,7 @@ use JsonPath\Language;
 
 class ArrayInterval
 {
-    public static function eval(&$partial, $numbers) {
+    public static function evaluate(&$partial, $numbers) {
         $begin = null;
         $step = null;
         $end = null;

@@ -46,7 +46,7 @@ class SelectChildren
             if (count($names) > 1) {
                 $hasDiverged = true;
             }
-            $result = Expression\ChildNameList::eval($partial, $names, $createInexistent);
+            $result = Expression\ChildNameList::evaluate($partial, $names, $createInexistent);
         } else if (preg_match(Language\Regex::INDEX_LIST, $contents)) {
             $indexes = array_map(
                 function($x) { return intval(trim($x)); },
@@ -55,12 +55,12 @@ class SelectChildren
             if (count($indexes) > 1) {
                 $hasDiverged = true;
             }
-            $result = Expression\IndexList::eval($partial, $indexes, $createInexistent);
+            $result = Expression\IndexList::evaluate($partial, $indexes, $createInexistent);
         } else if (preg_match(Language\Regex::ARRAY_INTERVAL, $contents, $match)) {
             // end($match) has the matched group with the interval
             $numbers = explode(Language\Token::COLON, end($match));
             $hasDiverged = true;
-            $result = Expression\ArrayInterval::eval($partial, $numbers);
+            $result = Expression\ArrayInterval::evaluate($partial, $numbers);
         } else if ($contents[0] === Language\Token::BOOL_EXPR
             && $contents[1] === Language\Token::EXPRESSION_BEGIN
             && $contents[$contentsLen - 1] === Language\Token::EXPRESSION_END
@@ -68,7 +68,7 @@ class SelectChildren
             $hasDiverged = true;
             $subexpr = substr($contents, 2, $contentsLen - 3);
             foreach ($partial as &$child) {
-                if (Expression\BooleanExpression::eval($root, $child, $subexpr)) {
+                if (Expression\BooleanExpression::evaluate($root, $child, $subexpr)) {
                     $result[] = &$child;
                 }
             }

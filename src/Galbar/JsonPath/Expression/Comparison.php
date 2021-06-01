@@ -22,10 +22,10 @@ use JsonPath\Language;
 
 class Comparison
 {
-    public static function eval(&$root, &$partial, $leftExpr, $comparator, $rightExpr)
+    public static function evaluate(&$root, &$partial, $leftExpr, $comparator, $rightExpr)
     {
-        $left = Value::eval($root, $partial, trim($leftExpr));
-        $right = Value::eval($root, $partial, trim($rightExpr));
+        $left = Value::evaluate($root, $partial, trim($leftExpr));
+        $right = Value::evaluate($root, $partial, trim($rightExpr));
         if ($comparator === Language\Token::COMP_EQ) {
             return $left === $right;
         } else if ($comparator === Language\Token::COMP_NEQ) {
