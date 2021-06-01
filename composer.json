@@ -20,13 +20,13 @@
         "satooshi/php-coveralls": ">=1.0.1"
     },
     "autoload": {
-        "psr-0": {
-            "JsonPath\\": "src/Galbar/",
-            "Utilities\\": "src/Galbar/"
+        "psr-4": {
+            "JsonPath\\": "src/Galbar/JsonPath",
+            "Utilities\\": "src/Galbar/Utilities"
         }
     },
     "autoload-dev": {
-        "psr-0": {
+        "psr-4": {
             "Tests\\": "tests/Galbar/"
         }
     }
