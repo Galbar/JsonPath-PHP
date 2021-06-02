@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 namespace JsonPath;
 
 use JsonPath\Expression;
@@ -42,27 +41,14 @@ class JsonPath
             $newSelection = array();
             $newHasDiverged = false;
             if (preg_match(Language\Regex::CHILD_NAME, $jsonPath, $match)) {
+                $childName = $match[1];
                 foreach ($selection as &$partial) {
-                    list($result, $newHasDiverged) = Operation\GetChild::apply($partial, $match[1], $createInexistent);
+                    list($result, $newHasDiverged) = Operation\GetChild::apply($partial, $childName, $createInexistent);
                     $newSelection = array_merge($newSelection, $result);
                 }
-                if (empty($newSelection) && preg_match(Language\Regex::PARENT_LENGTH, $match[0], $lengthMatch)) {
-                    if (count($selection) > 1) {
-                        $newSelection = [];
-                        /** .length of each array/string in array of arrays $item */
-                        foreach ($selection as $item) {
-                            if (is_array($item)) {
-                                array_push($newSelection,count($item));
-                            } else{
-                                array_push($newSelection,strlen($item));
-                            }
-                        }
-                    } elseif (count($selection) == 1) {
-                        if (is_array($selection[0])) {
-                            $newSelection = count($selection[0]);
-                        } else {
-                            $newSelection = strlen($selection[0]);
-                        }
+                if (empty($newSelection) && Language\Token::LENGTH === $childName) {
+                    foreach ($selection as $item) {
+                        $newSelection[] = is_array($item) ? count($item) : strlen($item);
                     }
                 }
                 if (empty($newSelection)) {

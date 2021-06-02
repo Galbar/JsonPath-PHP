@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 namespace JsonPath\Operation;
 
 use JsonPath\Language;

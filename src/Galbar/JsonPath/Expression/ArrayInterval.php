@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 namespace JsonPath\Expression;
 
 use Utilities\ArraySlice;

@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 namespace JsonPath\Language;
 
 class Token
@@ -40,4 +39,5 @@ class Token
     const VAL_TRUE = 'true';
     const VAL_FALSE = 'false';
     const VAL_NULL = 'null';
+    const LENGTH = 'length';
 }

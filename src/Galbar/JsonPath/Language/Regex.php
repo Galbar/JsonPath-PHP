@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 namespace JsonPath\Language;
 
 class Regex
@@ -26,7 +25,6 @@ class Regex
     // Child regex
     const CHILD_NAME = '/^\.([\w\_\$^\d][\w\-\$]*|\*)(.*)/u';
     const RECURSIVE_SELECTOR = '/^\.\.([\w\_\$^\d][\w\-\$]*|\*)(.*)/u';
-    const PARENT_LENGTH = '/^\.length$/';
 
     // Array expressions
     const ARRAY_INTERVAL = '/^(?:(-?\d*:-?\d*)|(-?\d*:-?\d*:-?\d*))$/';
