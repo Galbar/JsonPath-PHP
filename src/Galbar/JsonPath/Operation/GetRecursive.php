@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2018 Alessio Linares
+ * Copyright 2021 Alessio Linares
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,21 @@
  * limitations under the License.
  */
 
-namespace JsonPath;
+namespace JsonPath\Operation;
 
-/**
- * Exception that is raised when a invalid value is given to the JsonObject
- * constructor.
- *
- * @uses Exception
- */
-class InvalidJsonException extends \Exception
+use JsonPath\Language;
+
+class GetRecursive
 {
+    public static function apply(&$jsonObject, $childName)
+    {
+        list($result, $_) = GetChild::apply($jsonObject, $childName);
+        if (is_array($jsonObject)) {
+            foreach ($jsonObject as &$item) {
+                list($localResult, $_) = GetRecursive::apply($item, $childName);
+                $result = array_merge($result, $localResult);
+            }
+        }
+        return array($result, true);
+    }
 }

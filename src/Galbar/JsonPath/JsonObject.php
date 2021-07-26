@@ -17,9 +17,8 @@
 
 namespace JsonPath;
 
-use Utilities\ArraySlice;
 use JsonPath\InvalidJsonException;
-use JsonPath\InvalidJsonPathException;
+use JsonPath\Operation;
 
 /**
  * This is a [JSONPath](http://goessner.net/articles/JsonPath/) implementation for PHP.
@@ -105,56 +104,8 @@ use JsonPath\InvalidJsonPathException;
  */
 class JsonObject
 {
-    // Root regex
-    const RE_ROOT_OBJECT = '/^\$(.*)/';
-
-    // Child regex
-    const RE_CHILD_NAME = '/^\.([\w\_\$^\d][\w\-\$]*|\*)(.*)/u';
-    const RE_RECURSIVE_SELECTOR = '/^\.\.([\w\_\$^\d][\w\-\$]*|\*)(.*)/u';
-    const RE_PARENT_LENGTH = '/^\.length$/';
-
-    // Array expressions
-    const RE_ARRAY_INTERVAL = '/^(?:(-?\d*:-?\d*)|(-?\d*:-?\d*:-?\d*))$/';
-    const RE_INDEX_LIST = '/^(-?\d+)(\s*,\s*-?\d+)*$/';
-    const RE_LENGTH = '/^(.*)\.length$/';
-
-    // Object expression
-    const RE_CHILD_NAME_LIST = '/^(:?([\w\_\$^\d][\w\-\$]*?|".*?"|\'.*?\')(\s*,\s*([\w\_\$^\d][\w\-\$]*|".*?"|\'.*?\'))*)$/u';
-
-    // Conditional expressions
-    const RE_COMPARISON = '/^(.+)\s*(==|!=|<=|>=|<|>|=\~)\s*(.+)$/';
-    const RE_STRING = '/^(?:\'(.*)\'|"(.*)")$/';
-    const RE_REGEX_EXPR = '/^\/.*\/$/';
-    const RE_NEXT_SUBEXPR = '/.*?(\(|\)|\[|\])/';
-    const RE_OR = '/\s+(or|\|\|)\s+/';
-    const RE_AND = '/\s+(and|&&)\s+/';
-    const RE_NOT = '/^(not|!)\s+(.*)/';
-
-    // Tokens
-    const TOK_ROOT = '$';
-    const TOK_CHILD = '@';
-    const TOK_SELECTOR_BEGIN = '[';
-    const TOK_SELECTOR_END = ']';
-    const TOK_BOOL_EXPR = '?';
-    const TOK_EXPRESSION_BEGIN = '(';
-    const TOK_EXPRESSION_END = ')';
-    const TOK_ALL = '*';
-    const TOK_COMA = ',';
-    const TOK_COLON = ':';
-    const TOK_COMP_EQ = '==';
-    const TOK_COMP_NEQ = '!=';
-    const TOK_COMP_LT = '<';
-    const TOK_COMP_GT = '>';
-    const TOK_COMP_LTE = '<=';
-    const TOK_COMP_GTE = '>=';
-    const TOK_COMP_RE_MATCH = '=~';
-    const TOK_TRUE = 'true';
-    const TOK_FALSE = 'false';
-    const TOK_NULL = 'null';
-
     private $jsonObject = null;
     private $smartGet = false;
-    private $hasDiverged = false;
 
     /**
      * Class constructor.
@@ -267,9 +218,8 @@ class JsonObject
      */
     public function get($jsonPath)
     {
-        $this->hasDiverged = false;
-        $result = $this->getReal($this->jsonObject, $jsonPath);
-        if ($this->smartGet && $result !== false && !$this->hasDiverged) {
+        list($result, $hasDiverged) = JsonPath::get($this->jsonObject, $jsonPath);
+        if ($this->smartGet && $result !== false && !$hasDiverged) {
             return $result[0];
         }
         return $result;
@@ -293,8 +243,7 @@ class JsonObject
      */
     public function getJsonObjects($jsonPath)
     {
-        $this->hasDiverged = false;
-        $result = $this->getReal($this->jsonObject, $jsonPath);
+        list($result, $hasDiverged) = JsonPath::get($this->jsonObject, $jsonPath);
         if ($result !== false) {
             $objs = array();
             foreach($result as &$value) {
@@ -302,7 +251,7 @@ class JsonObject
                 $jsonObject->jsonObject = &$value;
                 $objs[] = $jsonObject;
             }
-            if ($this->smartGet && !$this->hasDiverged) {
+            if ($this->smartGet && !$hasDiverged) {
                 return $objs[0];
             }
             return $objs;
@@ -328,7 +277,7 @@ class JsonObject
      */
     public function set($jsonPath, $value)
     {
-        $result = $this->getReal($this->jsonObject, $jsonPath, true);
+        list($result, $_) = JsonPath::get($this->jsonObject, $jsonPath, true);
         if ($result !== false) {
             foreach ($result as &$element) {
                 $element = $value;
@@ -352,7 +301,7 @@ class JsonObject
      */
     public function add($jsonPath, $value, $field=null)
     {
-        $result = $this->getReal($this->jsonObject, $jsonPath, true);
+        list($result, $_) = JsonPath::get($this->jsonObject, $jsonPath, true);
         foreach ($result as &$element) {
             if (is_array($element)) {
                 if ($field == null) {
@@ -378,373 +327,12 @@ class JsonObject
      */
     public function remove($jsonPath, $field)
     {
-        $result = $this->getReal($this->jsonObject, $jsonPath);
+        list($result, $_) = JsonPath::get($this->jsonObject, $jsonPath);
         foreach ($result as &$element) {
             if (is_array($element)) {
                 unset($element[$field]);
             }
         }
         return $this;
-    }
-
-    private function expressionValue(&$jsonObject, $expression)
-    {
-        if ($expression === self::TOK_NULL) {
-            return null;
-        } else if ($expression === self::TOK_TRUE) {
-            return true;
-        } else if ($expression === self::TOK_FALSE) {
-            return false;
-        } else if (is_numeric($expression)) {
-            return floatval($expression);
-        } else if (preg_match(self::RE_STRING, $expression)) {
-            return substr($expression, 1, strlen($expression) - 2);
-        } else if (preg_match(self::RE_REGEX_EXPR, $expression)) {
-            return $expression;
-        } else {
-            $match = array();
-            $length = preg_match(self::RE_LENGTH, $expression, $match);
-            if ($length) {
-                $expression = $match[1];
-            }
-            $result = false;
-            if ($expression[0] === self::TOK_ROOT){
-                $result = $this->getReal($this->jsonObject, $expression);
-            }
-            else if ($expression[0] === self::TOK_CHILD) {
-                $expression[0] = self::TOK_ROOT;
-                $result = $this->getReal($jsonObject, $expression);
-            }
-            if ($result !== false) {
-                if ($length) {
-                    if (is_array($result[0])) {
-                        return (float) count($result[0]);
-                    }
-                    if (is_string($result[0])) {
-                        return (float) strlen($result[0]);
-                    }
-                    return false;
-                }
-                if (is_float($result[0]) || is_int($result[0])) {
-                    $result[0] = (float) $result[0];
-                }
-                return $result[0];
-            }
-            return $result;
-        }
-    }
-
-    private function booleanExpressionComparison(&$jsonObject, $leftExpr, $comparator, $rightExpr)
-    {
-        $left = $this->expressionValue($jsonObject, trim($leftExpr));
-        $right = $this->expressionValue($jsonObject, trim($rightExpr));
-        if ($comparator === self::TOK_COMP_EQ) {
-            return $left === $right;
-        } else if ($comparator === self::TOK_COMP_NEQ) {
-            return $left !== $right;
-        } else if ($comparator === self::TOK_COMP_LT) {
-            return $left < $right;
-        } else if ($comparator === self::TOK_COMP_GT) {
-            return $left > $right;
-        } else if ($comparator === self::TOK_COMP_LTE) {
-            return $left <= $right;
-        } else if ($comparator === self::TOK_COMP_GTE) {
-            return $left >= $right;
-        } else { // $comparator === self::TOK_COMP_RE_MATCH
-            if (is_string($right) && is_string($left)) {
-                return (bool) preg_match($right, $left);
-            }
-            return false;
-        }
-    }
-
-    private function booleanExpressionAnds(&$jsonObject, $expression)
-    {
-        $values = preg_split(self::RE_AND, $expression);
-        $match = array();
-        foreach ($values as $subexpr) {
-            $not = false;
-            if (preg_match(self::RE_NOT, $subexpr, $match)) {
-                $subexpr = $match[2];
-                $not = true;
-            }
-
-            $result = false;
-            if (preg_match(self::RE_COMPARISON, $subexpr, $match)) {
-                $result = $this->booleanExpressionComparison($jsonObject, $match[1], $match[2], $match[3]);
-            }
-            else {
-                $result = $this->expressionValue($jsonObject, $subexpr);
-            }
-            if ($not) {
-                if ($result !== false) {
-                    return false;
-                }
-            } else {
-                if ($result === false) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    private function booleanExpression(&$jsonObject, $expression)
-    {
-        $ands = preg_split(self::RE_OR, $expression);
-        foreach ($ands as $subexpr) {
-            if ($this->booleanExpressionAnds($jsonObject, $subexpr)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private function matchValidExpression($jsonPath, &$result, $offset=0)
-    {
-        if ($jsonPath[$offset] != self::TOK_SELECTOR_BEGIN) {
-            return false;
-        }
-        $initialOffset = $offset;
-        $offset += 1;
-        $parenCount = 0;
-        $bracesCount = 1;
-        // $count is a reference to the counter of the $startChar type
-        $match = array();
-        while ($bracesCount > 0 and $parenCount >= 0) {
-            if (preg_match(self::RE_NEXT_SUBEXPR, $jsonPath, $match,  PREG_OFFSET_CAPTURE, $offset)) {
-                $c = $match[1][0];
-                if ($c === self::TOK_EXPRESSION_BEGIN) {
-                    $parenCount += 1;
-                } else if ($c === self::TOK_EXPRESSION_END) {
-                    $parenCount -= 1;
-                } else if ($c === self::TOK_SELECTOR_BEGIN) {
-                    $bracesCount += 1;
-                } else if ($c === self::TOK_SELECTOR_END) {
-                    $bracesCount -= 1;
-                }
-                $offset = $match[1][1] + 1;
-            } else {
-                break;
-            }
-        }
-        if ($bracesCount == 0 && $parenCount == 0) {
-            $result = array(
-                substr($jsonPath, $initialOffset + 1, $offset - $initialOffset - 2),
-                substr($jsonPath, $offset - $initialOffset)
-            );
-            return 1;
-        }
-        $result = array();
-        return 0;
-    }
-
-    private function opChildName(&$jsonObject, $childName, &$result, $createInexistent = false)
-    {
-        if (is_array($jsonObject)) {
-            if ($childName === self::TOK_ALL) {
-                $this->hasDiverged = true;
-                foreach ($jsonObject as $key => $item) {
-                    $result[] = &$jsonObject[$key];
-                }
-            } else if (array_key_exists($childName, $jsonObject)) {
-                $result[] = &$jsonObject[$childName];
-            } else if ($createInexistent) {
-                $jsonObject[$childName] = array();
-                $result[] = &$jsonObject[$childName];
-            }
-            return true;
-        }
-        return false;
-    }
-
-    private function opChildSelector(&$jsonObject, $contents, &$result, $createInexistent = false)
-    {
-        if (is_array($jsonObject)) {
-            $match = array();
-            $contentsLen = strlen($contents);
-            if ($contents === self::TOK_ALL) {
-                $this->hasDiverged = true;
-                foreach ($jsonObject as $key => $item) {
-                    $result[] = &$jsonObject[$key];
-                }
-            } else if (preg_match(self::RE_CHILD_NAME_LIST, $contents, $match)) {
-                $names = array_map(
-                    function($x) {
-                        return trim($x, " \t\n\r\0\x0B'\"");
-                    },
-                    explode(self::TOK_COMA, $contents)
-                );
-                if (count($names) > 1) {
-                    $this->hasDiverged = true;
-                }
-
-                $names = array_filter(
-                    $names,
-                    function($x) use ($createInexistent, $jsonObject) {
-                        return $createInexistent || array_key_exists($x, $jsonObject);
-                    }
-                );
-                foreach ($names as $name) {
-                    if (!array_key_exists($name, $jsonObject)) {
-                        $jsonObject[$name] = array();
-                    }
-                    $result[] = &$jsonObject[$name];
-                }
-            } else if (preg_match(self::RE_INDEX_LIST, $contents)) {
-                $index = array_map(
-                    function($x) use ($jsonObject){
-                        $i = intval(trim($x));
-                        if ($i < 0) {
-                            $n = count($jsonObject);
-                            $i = $i % $n;
-                            if ($i < 0) {
-                                $i += $n;
-                            }
-                        }
-                        return $i;
-                    },
-                    explode(self::TOK_COMA, $contents)
-                );
-                if (count($index) > 1) {
-                    $this->hasDiverged = true;
-                }
-
-                $index = array_filter(
-                    $index,
-                    function($x) use ($createInexistent, $jsonObject) {
-                        return $createInexistent || array_key_exists($x, $jsonObject);
-                    }
-                );
-                foreach ($index as $i) {
-                    if (!array_key_exists($i, $jsonObject)) {
-                        $jsonObject[$i] = array();
-                    }
-                    $result[] = &$jsonObject[$i];
-                }
-            } else if (preg_match(self::RE_ARRAY_INTERVAL, $contents, $match)) {
-                $this->hasDiverged = true;
-                $begin = null;
-                $step = null;
-                $end = null;
-                // end($match) has the matched group with the interval
-                $numbers = explode(self::TOK_COLON, end($match));
-                // $numbers has the different numbers of the interval
-                // depending on if there are 2 (begin:end) or 3 (begin:end:step)
-                // numbers $begin, $step, $end are reassigned
-                if (count($numbers) === 3) {
-                    $step = ($numbers[2] !== '' ? intval($numbers[2]) : $step);
-                }
-                $end = ($numbers[1] !== '' ? intval($numbers[1]) : $end);
-                $begin = ($numbers[0] !== '' ? intval($numbers[0]) : $begin);
-
-                $slice = ArraySlice::slice($jsonObject, $begin, $end, $step, true);
-                foreach ($slice as $i => $x) {
-                    if ($x !== null) {
-                        $result[] = &$slice[$i];
-                    }
-                }
-            } else if ($contents[0] === self::TOK_BOOL_EXPR
-                && $contents[1] === self::TOK_EXPRESSION_BEGIN
-                && $contents[$contentsLen - 1] === self::TOK_EXPRESSION_END
-            ) {
-                $this->hasDiverged = true;
-                $subexpr = substr($contents, 2, $contentsLen - 3);
-                foreach ($jsonObject as &$child) {
-                    if ($this->booleanExpression($child, $subexpr)) {
-                        $result[] = &$child;
-                    }
-                }
-            } else {
-                throw new InvalidJsonPathException($contents);
-            }
-            return true;
-        }
-        return false;
-    }
-
-    private function opRecursiveSelector(&$jsonObject, $childName, &$result)
-    {
-        $this->opChildName($jsonObject, $childName, $result);
-        if (is_array($jsonObject)) {
-            foreach ($jsonObject as &$item) {
-                $this->opRecursiveSelector($item, $childName, $result);
-            }
-        }
-    }
-
-    private function getReal(&$jsonObject, $jsonPath, $createInexistent = false)
-    {
-        $match = array();
-        if (preg_match(self::RE_ROOT_OBJECT, $jsonPath, $match) === 0) {
-            throw new InvalidJsonPathException($jsonPath);
-        }
-
-        $jsonPath = $match[1];
-        $rootObjectPrev = &$this->jsonObject;
-        $this->jsonObject = &$jsonObject;
-        $selection = array(&$jsonObject);
-        while (strlen($jsonPath) > 0 and count($selection) > 0) {
-            $newSelection = array();
-            if (preg_match(self::RE_CHILD_NAME, $jsonPath, $match)) {
-                foreach ($selection as &$jsonObject) {
-                    $this->opChildName($jsonObject, $match[1], $newSelection, $createInexistent);
-                }
-                if(
-                    empty($newSelection) &&
-                    preg_match(self::RE_PARENT_LENGTH, $match[0], $lengthMatch)
-                ){
-                    if(count($selection) > 1){
-                        $newSelection = [];
-                        /** .length of each array/string in array of arrays $item */
-                        foreach ($selection as $item) {
-                            if(is_array($item)){
-                                array_push($newSelection,count($item));
-                            }else{
-                                array_push($newSelection,strlen($item));
-                            }
-                        }
-                    }elseif(count($selection) == 1){
-                        if(is_array($selection[0])){
-                            $newSelection = count($selection[0]);
-                        }else{
-                            $newSelection = strlen($selection[0]);
-                        }
-                    }
-                }
-                if (empty($newSelection)) {
-                    $selection = false;
-                    break;
-                } else {
-                    $jsonPath = $match[2];
-                }
-            } else if ($this->matchValidExpression($jsonPath, $match)) {
-                $contents = $match[0];
-                foreach ($selection as &$jsonObject) {
-                    $this->opChildSelector($jsonObject, $contents, $newSelection, $createInexistent);
-                }
-                if (empty($newSelection)) {
-                    $selection = false;
-                    break;
-                } else {
-                    $jsonPath = $match[1];
-                }
-            } else if (preg_match(self::RE_RECURSIVE_SELECTOR, $jsonPath, $match)) {
-                $this->hasDiverged = true;
-                $this->opRecursiveSelector($selection, $match[1], $newSelection);
-                if (empty($newSelection)) {
-                    $selection = false;
-                    break;
-                } else {
-                    $jsonPath = $match[2];
-                }
-            } else {
-                throw new InvalidJsonPathException($jsonPath);
-            }
-            $selection = $newSelection;
-        }
-
-        $this->jsonObject = &$rootObjectPrev;
-        return $selection;
     }
 }
