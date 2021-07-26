@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.3
+---
+* Expose internal language parsing and querying functions as part of the public API
+
 1.2
 ---
 * Add `!` as synonym of `not`
