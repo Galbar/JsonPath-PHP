@@ -31,7 +31,7 @@ Installation
 
 To install JsonPath you will need to be using Composer in your project. To install it please see the [docs](https://getcomposer.org/download/).
 
-```
+```bash
 composer require galbar/jsonpath
 ```
 
@@ -39,12 +39,12 @@ composer require galbar/jsonpath
 Usage
 =====
 In every file you use it add:  
-```
+```php
 use JsonPath\JsonObject;
 ```
 
 Now you can create an instance of JsonObject and use it:
-```
+```php
 // $json can be a string containing json, a PHP array, a PHP object or null.
 // If $json is null (or not present) the JsonObject will be empty.
 $jsonObject = new JsonObject();
@@ -151,7 +151,7 @@ the right _regpattern_. Other wise returns `false`.
 JsonPath Example
 ================
 Consider the following json:
-```
+```json
 { "store": {
     "book": [
       { "category": "reference",
