@@ -214,6 +214,13 @@ class JsonPathTest extends \PHPUnit_Framework_TestCase
                 "$.store.book[0:3:2].price"
             ),
             array(
+                array(
+                    8.95,
+                    12.99
+                ),
+                "$.store.book[:2].price"
+            ),
+            array(
                 false,
                 "$.store.bicycle.price[2]"
             ),

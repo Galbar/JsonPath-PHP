@@ -32,7 +32,7 @@ class Regex
     const LENGTH = '/^(.*)\.length$/';
 
     // Object expression
-    const CHILD_NAME_LIST = '/^(:?([\w\_\$^\d][\w\-\$]*?|".*?"|\'.*?\')(\s*,\s*([\w\_\$^\d][\w\-\$]*|".*?"|\'.*?\'))*)$/u';
+    const CHILD_NAME_LIST = '/^(?:([\w\_\$^\d][\w\-\$]*?|".*?"|\'.*?\')(\s*,\s*([\w\_\$^\d][\w\-\$]*|".*?"|\'.*?\'))*)$/u';
 
     // Conditional expressions
     const EXPR_STRING = '/^(?:\'(.*)\'|"(.*)")$/';
