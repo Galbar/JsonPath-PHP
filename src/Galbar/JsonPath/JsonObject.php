@@ -219,7 +219,7 @@ class JsonObject
     public function get($jsonPath)
     {
         list($result, $hasDiverged) = JsonPath::get($this->jsonObject, $jsonPath);
-        if ($this->smartGet && $result !== false && !$hasDiverged) {
+        if ($this->smartGet && $result !== false && !$hasDiverged && is_array($result)) {
             return $result[0];
         }
         return $result;
@@ -251,7 +251,7 @@ class JsonObject
                 $jsonObject->jsonObject = &$value;
                 $objs[] = $jsonObject;
             }
-            if ($this->smartGet && !$hasDiverged) {
+            if ($this->smartGet && !$hasDiverged && is_array($result)) {
                 return $objs[0];
             }
             return $objs;
