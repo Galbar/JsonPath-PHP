@@ -156,7 +156,7 @@ class JsonObjectLengthOperatorTest extends \PHPUnit_Framework_TestCase
         $jsonObject = new JsonObject($this->json);
         $result = $jsonObject->get($jsonPath);
         $this->assertEquals(
-            3,
+            [3],
             $result
         );
 
@@ -164,14 +164,14 @@ class JsonObjectLengthOperatorTest extends \PHPUnit_Framework_TestCase
         $jsonPath = '$.music.bands[0].albums[0].length.length';
         $result = $jsonObject->get($jsonPath);
         $this->assertEquals(
-            5,
+            [5],
             $result
         );
 
         $jsonPath = '$.music.bands[0].albums[1].title.length';
         $result = $jsonObject->get($jsonPath);
         $this->assertEquals(
-            6,
+            [6],
             $result
         );
     }
@@ -214,6 +214,61 @@ class JsonObjectLengthOperatorTest extends \PHPUnit_Framework_TestCase
         /** Arrays Count Length Test */
         $jsonPath = '$.music.bands[*].albums.length';
         $jsonObject = new JsonObject($this->json);
+        $result = $jsonObject->get($jsonPath);
+        $this->assertEquals(
+            [
+                3,
+                3
+            ],
+            $result
+        );
+
+        /** String Length Test */
+        $jsonPath = '$.music.bands[0].albums[*].length.length';
+        $result = $jsonObject->get($jsonPath);
+        $this->assertEquals(
+            [
+                5,
+                5,
+                6
+            ],
+            $result
+        );
+
+        $jsonPath = '$.music.bands[0].albums[*].title.length';
+        $result = $jsonObject->get($jsonPath);
+        $this->assertEquals(
+            [
+                5,
+                6,
+                5
+            ],
+            $result
+        );
+
+        $jsonPath = '$.music.bands[*].albums[*].length.length';
+        $result = $jsonObject->get($jsonPath);
+        $this->assertEquals(
+            [
+                5,
+                5,
+                6,
+                6,
+                6,
+                6
+            ],
+            $result
+        );
+    }
+
+    /**
+     * @throws InvalidJsonException
+     */
+    public function testArrayLengthSmartGet()
+    {
+        /** Arrays Count Length Test */
+        $jsonPath = '$.music.bands[*].albums.length';
+        $jsonObject = new JsonObject($this->json, true);
         $result = $jsonObject->get($jsonPath);
         $this->assertEquals(
             [
