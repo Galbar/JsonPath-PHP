@@ -47,12 +47,8 @@ class JsonPath
                     $newSelection = array_merge($newSelection, $result);
                 }
                 if (empty($newSelection) && Language\Token::LENGTH === $childName) {
-                    if (count($selection) > 1) {
-                        foreach ($selection as $item) {
-                            $newSelection[] = is_array($item) ? count($item) : strlen($item);
-                        }
-                    } else if (count($selection) == 1) {
-                        $newSelection = is_array($selection[0]) ? count($selection[0]) : strlen($selection[0]);
+                    foreach ($selection as $item) {
+                        $newSelection[] = is_array($item) ? count($item) : strlen($item);
                     }
                 }
                 if (empty($newSelection)) {
