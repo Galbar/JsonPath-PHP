@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2021 Alessio Linares
  *
@@ -23,7 +24,7 @@ class Regex
     const ROOT_OBJECT = '/^\$(.*)/';
 
     // Child regex
-    const CHILD_NAME = '/^\.([\w\_\$^\d][\w\-\$]*|\*)(.*)/u';
+    const CHILD_NAME = '/^\.([\w\_\$^\d][:\w\-\$]*|\*)(.*)/u';
     const RECURSIVE_SELECTOR = '/^\.\.([\w\_\$^\d][\w\-\$]*|\*)(.*)/u';
 
     // Array expressions
@@ -32,7 +33,7 @@ class Regex
     const LENGTH = '/^(.*)\.length$/';
 
     // Object expression
-    const CHILD_NAME_LIST = '/^(?:([\w\_\$^\d][\w\-\$]*?|".*?"|\'.*?\')(\s*,\s*([\w\_\$^\d][\w\-\$]*|".*?"|\'.*?\'))*)$/u';
+    const CHILD_NAME_LIST = '/^(?:([\w\_\$^\d][:\w\-\$]*?|".*?"|\'.*?\')(\s*,\s*([\w\_\$^\d][:\w\-\$]*|".*?"|\'.*?\'))*)$/u';
 
     // Conditional expressions
     const EXPR_STRING = '/^(?:\'(.*)\'|"(.*)")$/';
@@ -43,3 +44,4 @@ class Regex
     const OP_NOT = '/^(not|!)\s+(.*)/';
     const NEXT_SUBEXPR = '/.*?(\(|\)|\[|\])/';
 }
+
