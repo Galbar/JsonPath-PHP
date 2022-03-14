@@ -71,7 +71,7 @@ class SelectChildren
                     $result[] = &$child;
                 }
             }
-            if (Language\ChildSelector::match($next, $nextMatch)) {
+            if ($next && Language\ChildSelector::match($next, $nextMatch)) {
                 if (isset($nextMatch[0]) && is_numeric($nextMatch[0])) {
                     // Next we will be trying to get nth child, so put results in parent array
                     $result = array($result);
