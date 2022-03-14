@@ -22,7 +22,7 @@ use JsonPath\Expression;
 
 class SelectChildren
 {
-    public static function apply(&$root, &$partial, $contents, $createInexistent = false)
+    public static function apply(&$root, &$partial, $contents, $createInexistent = false, $next="")
     {
         if (!is_array($partial)) {
             return array(array(), false);
@@ -69,6 +69,13 @@ class SelectChildren
             foreach ($partial as &$child) {
                 if (Expression\BooleanExpression::evaluate($root, $child, $subexpr)) {
                     $result[] = &$child;
+                }
+            }
+            if (Language\ChildSelector::match($next, $nextMatch)) {
+                if (isset($nextMatch[0]) && is_numeric($nextMatch[0])) {
+                    // Next we will be trying to get nth child, so put results in parent array
+                    $result = array($result);
+                    $hasDiverged = false;
                 }
             }
         } else {

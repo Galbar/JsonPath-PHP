@@ -60,7 +60,7 @@ class JsonPath
             } else if (Language\ChildSelector::match($jsonPath, $match)) {
                 $contents = $match[0];
                 foreach ($selection as &$partial) {
-                    list($result, $newHasDiverged) = Operation\SelectChildren::apply($root, $partial, $contents, $createInexistent);
+                    list($result, $newHasDiverged) = Operation\SelectChildren::apply($root, $partial, $contents, $createInexistent, isset($match[1]) ? $match[1] : "");
                     $newSelection = array_merge($newSelection, $result);
                 }
                 if (empty($newSelection)) {
