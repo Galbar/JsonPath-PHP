@@ -36,7 +36,7 @@ class Regex
 
     // Conditional expressions
     const EXPR_STRING = '/^(?:\'(.*)\'|"(.*)")$/';
-    const EXPR_REGEX = '/^\/.*\/$/';
+    const EXPR_REGEX = '/^\/.*\/i?x?$/';
     const BINOP_COMP = '/^(.+)\s*(==|!=|<=|>=|<|>|=\~)\s*(.+)$/';
     const BINOP_OR = '/\s+(or|\|\|)\s+/';
     const BINOP_AND = '/\s+(and|&&)\s+/';
