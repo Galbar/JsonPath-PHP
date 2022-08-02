@@ -11,7 +11,8 @@ This is a [JSONPath](http://goessner.net/articles/JsonPath/) implementation for 
 This implementation features all elements in the specification except the `()` operator (in the spcecification there is the `$..a[(@.length-1)]`, but this can be achieved with `$..a[-1]` and the latter is simpler).
 
 On top of this it implements some extended features:
-* Regex match comparisons (p.e. `$.store.book[?(@.author =~ /.*Tolkien/)]`)
+* Regex match key (p.e. `$.*[?(/^bo{2}k$/)]` or `$[?(/a\wthors/)]`).
+* Regex match value comparisons (p.e. `$.store.book[?(@.author =~ /.*Tolkien/)]`)
 * For the child operator `[]` there is no need to surround child names with quotes (p.e. `$.[store][book, bicycle]`) except if the name of the field is a non-valid javascript variable name.
 * `.length` can be used to get the length of a string, get the length of an array and to check if a node has children.
 
@@ -96,11 +97,11 @@ JsonPath Language
 =================
 This library implements the following specification:
 ```
-var_name    = [\w\_\$^\d][\w\-\$]*
+var_name    = [filterexpr][\w\_\$^\d][\w\-\$]*
 number      = ([0-9]+(\.[0-9]*) | ([0-9]*\.[0-9]+))
 string      = ('\''.*?'\'' | '"'.*?'"')
 boolean     = ('true' | 'false')
-regpattern  = '/'.*?'/'
+regpattern  = '/'.*?'/i?x?'
 null        = 'null'
 index       = -?[0-9]+
 
@@ -116,7 +117,7 @@ childfilter = '[' ('*' | namelist | indexlist | arrayslice | filterexpr) ']'
 namelist    = var_name (',' (var_name | '\'' .*? '\'' | '"' .*? '"'))*
 indexlist   = index (',' index)*
 arrayslice  = index? ':' index? ':' index?
-filterexpr  = '?(' ors ')'
+filterexpr  = '?(' ors ' | regpattern)'
 
 ors         = ands (' ' ( 'or' | '\|\|' ) ' ' ands)*
 ands        = expr (' ' ( 'and' | '&&' ) ' ' expr)*
@@ -211,6 +212,7 @@ JsonPath | Result
 `$[store]` | The store.
 `$['store']` | The store.
 `$..book[*][title, 'category', "author"]` | title, category and author of all books.
+See more examples in the `./tests/Galbar/JsonPath` folder.
 
 Test
 ====
