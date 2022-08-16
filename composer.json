@@ -7,8 +7,7 @@
     "authors": [
         {
             "name": "Alessio Linares",
-            "email": "alessio@alessio.cc",
-            "role": "Software Engineer"
+            "email": "alessio@alessio.cc"
         }
     ],
     "require": {
@@ -29,5 +28,8 @@
         "psr-4": {
             "Tests\\": "tests/Galbar/"
         }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
     }
 }
