@@ -17,6 +17,11 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Setup PHP with specific version
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '5.4'
+
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
 
