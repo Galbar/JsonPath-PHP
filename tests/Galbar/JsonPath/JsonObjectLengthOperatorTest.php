@@ -315,4 +315,17 @@ class JsonObjectLengthOperatorTest extends \PHPUnit_Framework_TestCase
             $result
         );
     }
+
+    /**
+     * Validates behaviour described in issue https://github.com/Galbar/JsonPath-PHP/issues/62
+     *
+     * @throws InvalidJsonException
+     */
+    public function testObjectHasPropertyLength()
+    {
+        $json = '{"box": {"length":[{"locale":null,"scope":null,"data":{"amount":"130.0000","unit":"CENTIMETER"}}]}}';
+        $jsonPath = '$.box.length.*.data.amount';
+        $jsonObject = new JsonObject($json);
+        $this->assertEquals($jsonObject->get($jsonPath), array("130.0000"));
+    }
 }
