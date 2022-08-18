@@ -66,8 +66,13 @@ class SelectChildren
         ) {
             $hasDiverged = true;
             $subexpr = substr($contents, 2, $contentsLen - 3);
-            foreach ($partial as &$child) {
-                if (Expression\BooleanExpression::evaluate($root, $child, $subexpr)) {
+            $is_regex = preg_match(Language\Regex::EXPR_REGEX, $subexpr);
+            foreach ($partial as $key => &$child) {
+                if ($is_regex) {
+                    if (preg_match($subexpr, $key)) {
+                       $result[] = &$child;
+                    }
+                } else if (Expression\BooleanExpression::evaluate($root, $child, $subexpr)) {
                     $result[] = &$child;
                 }
             }

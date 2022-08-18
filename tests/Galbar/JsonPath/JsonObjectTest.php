@@ -300,6 +300,18 @@ class JsonPathTest extends \PHPUnit_Framework_TestCase
             ),
             array(
                 array(
+                    "The Lord of the Rings"
+                ),
+                "$..*[?(@.author =~ /.*tolkien/i)].title"
+            ),
+            array(
+                array(
+                    "The Lord of the Rings"
+                ),
+                "$..*[?(@.author =~ /  J.\ R.\ R.\ Tolkien  /x)].title"
+            ),
+            array(
+                array(
                     "red"
                 ),
                 "$..*[?(@.length <= 5)].color"
