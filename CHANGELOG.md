@@ -1,9 +1,40 @@
 Changelog
 =========
 
+2.1
+---
+
+* Allow filter keys with a regex match
+  (https://github.com/Galbar/JsonPath-PHP/pull/59)
+* Allow PCRE `i` and `x` modifiers in regex expressions
+  (https://github.com/Galbar/JsonPath-PHP/pull/59)
+* Fix bug causing a DivisionByZeroError when using negative indexes to access
+  an empty array (https://github.com/Galbar/JsonPath-PHP/issues/60)
+
+2.0
+---
+### Normalize behavior of .length operation
+
+Until now (except for version 1.3, sorry, you should go to 1.3.1 if this
+affects you) .length operator always behaved in the smartGet manner.
+
+Starting with this version, .length will behave as any other operator. That is,
+it will always return an array of results, even if there is just one, unless
+smartGet is enabled, then it'll work in the same way smartGet works for every
+other operation: return the result directly, if the path does not diverge, or
+return an array of results, if the path diverges.
+
+Also, fix regex so that array interval selector of the type `[:3]` work.
+
+
+1.3.1
+-----
+* Revert .length behavior to avoid breaking changes in same major version
+
 1.3
 ---
-* Expose internal language parsing and querying functions as part of the public API
+* Expose internal language parsing and querying functions as part of the public
+  API
 
 1.2
 ---
@@ -39,7 +70,8 @@ Changelog
 
 0.7.1
 -----
-* Bug fix when accessing an array with a negative index. It now behaves as expected.
+* Bug fix when accessing an array with a negative index. It now behaves as
+  expected.
 
 0.7
 ---
@@ -56,14 +88,16 @@ Changelog
 
 0.5
 ---
-* Added getJsonObjects to get child JsonObjects that reference the original JsonObject contents. 
+* Added getJsonObjects to get child JsonObjects that reference the original
+  JsonObject contents. 
 This is also affected by _smartGet_.
 
 0.4
 ---
-* Added support for json objects with fields with names that are not valid javascript variable
- names.
-* Fixed error in smart get when accessing a list of names or list of indices and only one existed in the object.
+* Added support for json objects with fields with names that are not valid
+  javascript variable names.
+* Fixed error in smart get when accessing a list of names or list of indices
+  and only one existed in the object.
 
 0.3
 ---
