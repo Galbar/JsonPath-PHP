@@ -45,6 +45,6 @@ jobs:
 
     - name: Coveralls
       env:
-        COVERALLS_REPO_TOKEN: ${{ github.token }}
+        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
       run: php vendor/bin/coveralls -v
 
