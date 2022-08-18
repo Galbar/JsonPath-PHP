@@ -1037,4 +1037,11 @@ EOF;
 
         $this->assertFalse($jsonObject->getJsonObjects('$.abc'));
     }
+
+    // Bug when using negative index triggers DivisionByZeroError
+    // https://github.com/Galbar/JsonPath-PHP/issues/60
+    public function testNegativeIndexOnEmptyArray() {
+        $object = new \JsonPath\JsonObject('{"data": []}');
+        $this->assertFalse($object->get('$.data[-1]'));
+    }
 }
