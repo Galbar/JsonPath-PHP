@@ -1199,5 +1199,20 @@ EOF;
     public function testNegativeIndexOnEmptyArray() {
         $object = new \JsonPath\JsonObject('{"data": []}');
         $this->assertFalse($object->get('$.data[-1]'));
+
+        $object = new \JsonPath\JsonObject('{"data": [{"id": 1},{"id": 2}]}');
+        $this->assertFalse($object->get('$.data[-5].id'));
+
+        $object = new \JsonPath\JsonObject('{"data": [{"id": 1}]}');
+        $this->assertEquals($object->get('$.data[-1].id'), [1]);
+
+        $object = new \JsonPath\JsonObject('{"data": [{"id": 1},{"id": 2}]}');
+        $this->assertEquals($object->get('$.data[-1].id'), [2]);
+
+        $object = new \JsonPath\JsonObject('{"data": []}');
+        $this->assertFalse($object->get('$.data[1].id'));
+
+        $object = new \JsonPath\JsonObject('{"data": [{"id": 1},{"id": 2}]}');
+        $this->assertFalse($object->get('$.data[3].id'));
     }
 }

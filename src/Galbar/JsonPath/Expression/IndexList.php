@@ -22,17 +22,11 @@ use JsonPath\Language;
 class IndexList
 {
     public static function evaluate(&$partial, $indexes, $createInexistent = false) {
-        if (empty($partial)) {
-            return array();
-        }
         $partialSize = count($partial);
         $indexes = array_map(
             function($i) use ($partialSize) {
                 if ($i < 0) {
-                    $i = $i % $partialSize;
-                    if ($i < 0) {
-                        $i += $partialSize;
-                    }
+                    $i += $partialSize;
                 }
                 return $i;
             },
