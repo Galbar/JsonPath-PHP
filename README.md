@@ -215,6 +215,7 @@ JsonPath | Result
 `$..book[*][title, 'category', "author"]` | title, category and author of all books.
 `$..book[?(@.author in [$.authors[0], $.authors[2]])]` | All books by "Nigel Rees" or "Herman Melville".
 `$.store.book[?(@.category == 'fiction' and @.price < 10 or @.color == "red")].price` | Books of fiction with a price lower than 10 or something with of color red. (`and` takes precedence to `or`)
+
 See more examples in the `./tests/Galbar/JsonPath` folder.
 
 Test
