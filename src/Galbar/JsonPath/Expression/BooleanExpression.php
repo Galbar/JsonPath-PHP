@@ -46,8 +46,9 @@ class BooleanExpression
             $result = false;
             if (preg_match(Language\Regex::BINOP_COMP, $subexpr, $match)) {
                 $result = Comparison::evaluate($root, $partial, $match[1], $match[2], $match[3]);
-            }
-            else {
+            } elseif (preg_match(Language\Regex::BINOP_IN_ARRAY, $subexpr, $match)) {
+                $result = InArray::evaluate($root, $partial, $match[1], $match[2]);
+            } else {
                 $result = Value::evaluate($root, $partial, $subexpr);
             }
             if ($not) {

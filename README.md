@@ -125,6 +125,7 @@ expr        = ( 'not ' | '! ' )? (value | comp)
 comp        = value ('==' | '!=' | '<' | '>' | '<=' | '>=' | '=~') value
 value       = (jsonpath | childpath | number | string | boolean | regpattern | null | length)
 length      = (jsonpath | childpath) '.length'
+in array    = var_name in [ value, value ]
 ```
 
 ### Limitations on the specification:  
@@ -212,6 +213,7 @@ JsonPath | Result
 `$[store]` | The store.
 `$['store']` | The store.
 `$..book[*][title, 'category', "author"]` | title, category and author of all books.
+`$..book[?(@.author in [$.authors[0], $.authors[2]])]` | All books by "Nigel Rees" or "Herman Melville".
 See more examples in the `./tests/Galbar/JsonPath` folder.
 
 Test

@@ -17,9 +17,9 @@
 
 namespace Tests;
 
-use JsonPath\JsonObject;
 use JsonPath\InvalidJsonException;
 use JsonPath\InvalidJsonPathException;
+use JsonPath\JsonObject;
 
 /**
  * Class JsonObjectTest
@@ -449,7 +449,6 @@ class JsonPathTest extends \PHPUnit_Framework_TestCase
      * testSmartGet
      *
      * @param array $expected expected
-     * @param array $jsonObject jsonObject
      * @param string $jsonPath jsonPath
      *
      * @return void
@@ -742,6 +741,157 @@ class JsonPathTest extends \PHPUnit_Framework_TestCase
             array(
                 array(1, 2, 3),
                 '$["Bike models"]'
+            ),
+            array(
+                array(
+                    array(
+                        "category" => "fiction",
+                        "author" => "Evelyn Waugh",
+                        "title" => "Sword of Honour",
+                        "price" => 12.99,
+                        "available" => false
+                    ),
+                    array(
+                        "category" => "fiction",
+                        "author" => "J. R. R. Tolkien",
+                        "isbn" => "0-395-19395-8",
+                        "title" => "The Lord of the Rings",
+                        "price" => 22.99,
+                        "available" => false
+                    )
+                ),
+                "$.store.book[?(@.title in ['Sword of Honour', 'The Lord of the Rings'])]",
+            ),
+            array(
+                array(
+                    array(
+                        "category" => "reference",
+                        "author" => "Nigel Rees",
+                        "title" => "Sayings of the Century",
+                        "price" => 8.95,
+                        "available" => true,
+                    ),
+                    array(
+                        "category" => "fiction",
+                        "author" => "Evelyn Waugh",
+                        "title" => "Sword of Honour",
+                        "price" => 12.99,
+                        "available" => false,
+                    ),
+                    array(
+                        "category" => "fiction",
+                        "author" => "J. R. R. Tolkien",
+                        "title" => "The Lord of the Rings",
+                        "isbn" => "0-395-19395-8",
+                        "price" => 22.99,
+                        "available" => false,
+                    ),
+                ),
+                "$.store.book[?(@.author == 'Nigel Rees' or @.title in ['Sword of Honour', 'The Lord of the Rings'])]",
+            ),
+            array(
+                array(
+                    array(
+                        "category" => "fiction",
+                        "author" => "Herman Melville",
+                        "title" => "Moby Dick",
+                        "isbn" => "0-553-21311-3",
+                        "price" => 8.99,
+                        "available" => true,
+                    )
+                ),
+                "$.store.book[?(@.isbn in ['0-553-21311-3', '0-395-19395-8'] and @.available == true)]"
+            ),
+            array(
+                array(
+                    array(
+                        "category" => "reference",
+                        "author" => "Nigel Rees",
+                        "title" => "Sayings of the Century",
+                        "price" => 8.95,
+                        "available" => true,
+                    ),
+                    array(
+                        "category" => "fiction",
+                        "author" => "Herman Melville",
+                        "title" => "Moby Dick",
+                        "isbn" => "0-553-21311-3",
+                        "price" => 8.99,
+                        "available" => true,
+                    )
+                ),
+                "$.store.book[?(not @.title in ['Sword of Honour', 'The Lord of the Rings'])]"
+            ),
+            array(
+                array(
+                    array(
+                        "category" => "fiction",
+                        "author" => "Evelyn Waugh",
+                        "title" => "Sword of Honour",
+                        "price" => 12.99,
+                        "available" => false,
+                    )
+                ),
+                "$.store.book[?(not @.isbn in ['0-553-21311-3', '0-395-19395-8'] and @.available == false)]"
+            ),
+            array(
+                array(
+                    array(
+                        "category" => "reference",
+                        "author" => "Nigel Rees",
+                        "title" => "Sayings of the Century",
+                        "price" => 8.95,
+                        "available" => true,
+                    ),
+                    array(
+                        "category" => "fiction",
+                        "author" => "Evelyn Waugh",
+                        "title" => "Sword of Honour",
+                        "price" => 12.99,
+                        "available" => false,
+                    )
+                ),
+                "$.store.book[?(@.price in [12.99, 8.95])]"
+            ),
+            array(
+                array(
+                    array(
+                        "category" => "reference",
+                        "author" => "Nigel Rees",
+                        "title" => "Sayings of the Century",
+                        "price" => 8.95,
+                        "available" => true,
+                    ),
+                    array(
+                        "category" => "fiction",
+                        "author" => "Herman Melville",
+                        "title" => "Moby Dick",
+                        "isbn" => "0-553-21311-3",
+                        "price" => 8.99,
+                        "available" => true,
+                    )
+                ),
+                "$.store.book[?(@.available in [ true ])]"
+            ),
+            array(
+                array(
+                    array(
+                        "category" => "reference",
+                        "author" => "Nigel Rees",
+                        "title" => "Sayings of the Century",
+                        "price" => 8.95,
+                        "available" => true,
+                    ),
+                    array(
+                        "category" => "fiction",
+                        "author" => "Herman Melville",
+                        "title" => "Moby Dick",
+                        "isbn" => "0-553-21311-3",
+                        "price" => 8.99,
+                        "available" => true,
+                    )
+                ),
+                "$..book[?(@.author in [$.authors[0], $.authors[2]])]"
             )
         );
     }
@@ -1016,7 +1166,13 @@ EOF;
         return array(
             array('$[store', '[store'),
             array('$[{fail}]', '{fail}'),
-            array('a.bc', 'a.bc')
+            array('a.bc', 'a.bc'),
+            array("$.store.book[?(@.title in ['foo']])]", "[?(@.title in ['foo']])]"),
+            array("$.store.book[?(@.title in [['foo'])]", "[?(@.title in [['foo'])]"),
+            array("$.store.book[?(@.title in ['foo')]", "[?(@.title in ['foo')]"),
+            array("$.store.book[?(@.title in 'foo'])]", "[?(@.title in 'foo'])]"),
+            array("$.store.book[?(@.title in 'foo')]", " in 'foo'"),
+            array("$.store.book[?(@.title ['foo'])]", " ['foo']"),
         );
     }
 
