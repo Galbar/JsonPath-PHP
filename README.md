@@ -121,11 +121,11 @@ filterexpr  = '?(' ors ' | regpattern)'
 
 ors         = ands (' ' ( 'or' | '\|\|' ) ' ' ands)*
 ands        = expr (' ' ( 'and' | '&&' ) ' ' expr)*
-expr        = ( 'not ' | '! ' )? (value | comp)
+expr        = ( 'not ' | '! ' )? (value | comp | in_array)
 comp        = value ('==' | '!=' | '<' | '>' | '<=' | '>=' | '=~') value
 value       = (jsonpath | childpath | number | string | boolean | regpattern | null | length)
 length      = (jsonpath | childpath) '.length'
-in array    = var_name in [ value, value ]
+in_array    = value 'in' '[' value (',' value)* ']'
 ```
 
 ### Limitations on the specification:  
