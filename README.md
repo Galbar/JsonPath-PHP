@@ -97,7 +97,7 @@ JsonPath Language
 =================
 This library implements the following specification:
 ```
-var_name    = [\w\_\$^\d][\w\-\$]*
+var_name¹   = /^\.([\p{L}\_\$][\w\-\$]*|\*)(.*)/u
 number      = ([0-9]+(\.[0-9]*) | ([0-9]*\.[0-9]+))
 string      = ('\''.*?'\'' | '"'.*?'"')
 boolean     = ('true' | 'false')
@@ -127,6 +127,8 @@ value       = (jsonpath | childpath | number | string | boolean | regpattern | n
 length      = (jsonpath | childpath) '.length'
 in_array    = value 'in' '[' value (',' value)* ']'
 ```
+
+¹`var_name`: the regexp roughly translates to "any valid JavaScript variable name".
 
 ### Limitations on the specification:  
 * The jsonpath inside _value_ cannot contain `or`, `and` or any comparator.

@@ -25,7 +25,7 @@ use JsonPath\JsonObject;
  * Class JsonObjectTest
  * @author Alessio Linares
  */
-class JsonPathTest extends \PHPUnit_Framework_TestCase
+class JsonObjectTest extends \PHPUnit_Framework_TestCase
 {
     private $json = '
 { "store": {
@@ -1173,6 +1173,7 @@ EOF;
             array("$.store.book[?(@.title in 'foo'])]", "[?(@.title in 'foo'])]"),
             array("$.store.book[?(@.title in 'foo')]", " in 'foo'"),
             array("$.store.book[?(@.title ['foo'])]", " ['foo']"),
+            array("$.2", ".2"),
         );
     }
 

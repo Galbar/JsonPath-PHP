@@ -23,8 +23,8 @@ class Regex
     const ROOT_OBJECT = '/^\$(.*)/';
 
     // Child regex
-    const CHILD_NAME = '/^\.([\w\_\$^\d][\w\-\$]*|\*)(.*)/u';
-    const RECURSIVE_SELECTOR = '/^\.\.([\w\_\$^\d][\w\-\$]*|\*)(.*)/u';
+    const CHILD_NAME = '/^\.([\p{L}\_\$][\w\-\$]*|\*)(.*)/u';
+    const RECURSIVE_SELECTOR = '/^\.\.([\p{L}\_\$][\w\-\$]*|\*)(.*)/u';
 
     // Array expressions
     const ARRAY_INTERVAL = '/^(?:(-?\d*:-?\d*)|(-?\d*:-?\d*:-?\d*))$/';

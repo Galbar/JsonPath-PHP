@@ -25,6 +25,9 @@ class Comparison
     {
         $left = Value::evaluate($root, $partial, trim($leftExpr));
         $right = Value::evaluate($root, $partial, trim($rightExpr));
+        if (is_bool($right) && !is_bool($left) || !is_bool($right) && is_bool($left)) {
+            return false;
+        }
         if ($comparator === Language\Token::COMP_EQ) {
             return $left === $right;
         } else if ($comparator === Language\Token::COMP_NEQ) {
