@@ -111,8 +111,8 @@ childpath   = '@' operator*
 operator    = (childname | childfilter | recursive) operator*
 
 childname   = '.' (var_name | '*')
-recursive   = '..' (var_name | '*')
 childfilter = '[' ('*' | namelist | indexlist | arrayslice | filterexpr) ']'
+recursive   = '..' (var_name | childfilter | '*')
 
 namelist    = var_name (',' (var_name | '\'' .*? '\'' | '"' .*? '"'))*
 indexlist   = index (',' index)*

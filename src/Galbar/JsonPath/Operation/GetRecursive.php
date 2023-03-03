@@ -21,14 +21,19 @@ use JsonPath\Language;
 
 class GetRecursive
 {
-    public static function apply(&$jsonObject, $childName)
+    public static function apply(&$root, &$partial, $jsonPath)
     {
-        list($result, $_) = GetChild::apply($jsonObject, $childName);
-        if (is_array($jsonObject)) {
-            foreach ($jsonObject as &$item) {
-                list($localResult, $_) = GetRecursive::apply($item, $childName);
-                $result = array_merge($result, $localResult);
-            }
+        list($result, $_) = \JsonPath\JsonPath::subtreeGet($root, $partial, $jsonPath);
+        if ($result === false) {
+            $result = array();
+        }
+
+        if (!is_array($partial)) {
+            return array($result, true);
+        }
+        foreach ($partial as &$item) {
+            list($localResult, $_) = GetRecursive::apply($root, $item, $jsonPath);
+            $result = array_merge($result, $localResult);
         }
         return array($result, true);
     }

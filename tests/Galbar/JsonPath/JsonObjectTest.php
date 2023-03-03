@@ -428,7 +428,7 @@ class JsonObjectTest extends \PHPUnit_Framework_TestCase
                 array(
                     "red"
                 ),
-                "$.store..*[?(@..model == null)].color"
+                "$.store..[?(@..model == null)].color"
             ),
             array(
                 array(
@@ -732,7 +732,7 @@ class JsonObjectTest extends \PHPUnit_Framework_TestCase
                 array(
                     "red"
                 ),
-                "$.store..*[?(@..model == null)].color"
+                "$.store..[?(@..model == null)].color"
             ),
             array(
                 array(1, 2, 3),

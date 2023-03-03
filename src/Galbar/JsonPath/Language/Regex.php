@@ -24,7 +24,7 @@ class Regex
 
     // Child regex
     const CHILD_NAME = '/^\.([\p{L}\_\$][\w\-\$]*|\*)(.*)/u';
-    const RECURSIVE_SELECTOR = '/^\.\.([\p{L}\_\$][\w\-\$]*|\*)(.*)/u';
+    const RECURSIVE_SELECTOR = '/^\.\.(.+)/u';
 
     // Array expressions
     const ARRAY_INTERVAL = '/^(?:(-?\d*:-?\d*)|(-?\d*:-?\d*:-?\d*))$/';
