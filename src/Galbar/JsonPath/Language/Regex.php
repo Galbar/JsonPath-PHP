@@ -23,7 +23,7 @@ class Regex
     const ROOT_OBJECT = '/^\$(.*)/';
 
     // Child regex
-    const CHILD_NAME = '/^\.([\p{L}\_\$][\w\-\$]*|\*)(.*)/u';
+    const CHILD_NAME = '/^\.([\p{L}\p{N}\_\$][\p{L}\p{N}\_\-\$]*|\*)(.*)/u';
     const RECURSIVE_SELECTOR = '/^\.\.(.+)/u';
 
     // Array expressions
@@ -32,7 +32,7 @@ class Regex
     const LENGTH = '/^(.*)\.length$/';
 
     // Object expression
-    const CHILD_NAME_LIST = '/^(?:([\w\_\$^\d][\w\-\$]*?|".*?"|\'.*?\')(\s*,\s*([\w\_\$^\d][\w\-\$]*|".*?"|\'.*?\'))*)$/u';
+    const CHILD_NAME_LIST = '/^(?:([\p{L}\p{N}\_\$][\p{L}\p{N}\_\-\$]*|".*?"|\'.*?\')(\s*,\s*([\p{L}\p{N}\_\$][\p{L}\p{N}\_\-\$]*|".*?"|\'.*?\'))*)$/u';
 
     // Conditional expressions
     const EXPR_STRING = '/^(?:\'(.*)\'|"(.*)")$/';

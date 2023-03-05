@@ -27,21 +27,12 @@ use JsonPath\JsonObject;
  */
 class JsonObjectIssue37Test extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * This library explicitly only supports valid JavaScript variable names with the dot notation.
-     *
-     * This is not a bug but a feature
-     */
     public function testCase1()
     {
         $jsonObject = new JsonObject('{"a": "first", "2": "second", "b": "third"}');
-        $exception = null;
-        try {
-            $jsonObject->get('$.2');
-        } catch (InvalidJsonPathException $e) {
-            $exception = $e;
-        }
-        $this->assertEquals($exception->getMessage(), "Error in JSONPath near '.2'");
+        $result = $jsonObject->get('$.2');
+        $expected = ["second"];
+        $this->assertEquals($expected, $result);
     }
 
     /**

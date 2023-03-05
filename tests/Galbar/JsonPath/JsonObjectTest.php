@@ -1172,8 +1172,7 @@ EOF;
             array("$.store.book[?(@.title in ['foo')]", "[?(@.title in ['foo')]"),
             array("$.store.book[?(@.title in 'foo'])]", "[?(@.title in 'foo'])]"),
             array("$.store.book[?(@.title in 'foo')]", " in 'foo'"),
-            array("$.store.book[?(@.title ['foo'])]", " ['foo']"),
-            array("$.2", ".2"),
+            array("$.store.book[?(@.title ['foo'])]", " ['foo']")
         );
     }
 
