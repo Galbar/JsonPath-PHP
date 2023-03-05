@@ -1,6 +1,18 @@
 Changelog
 =========
 
+3.0
+---
+### Breaking changes:
+* The recursive operation now works slightly different (see https://github.com/Galbar/JsonPath-PHP/commit/5ac1783ed447063357f472a080d56dbdfe5b4ee8)
+* Queries with no matches will now return empty arrays, instead of `false`. The only exception being when using smart get and a non-divergent path, where `false` will still be returned.
+
+### New features:
+* Support for child selector operation immediatly after recursive operation: `$..[?(@.author == "Nigel Rees")]`
+* `in [...]` operation
+* Added formal support for variable names starting with numbers in the dot-notation: `$.2`
+
+
 2.1
 ---
 
