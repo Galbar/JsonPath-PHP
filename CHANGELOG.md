@@ -9,7 +9,7 @@ Changelog
 
 ### New features:
 * Support for child selector operation immediatly after recursive operation: `$..[?(@.author == "Nigel Rees")]`
-* `in [...]` operation
+* In|Not In Array Operation (https://github.com/Galbar/JsonPath-PHP/pull/65 by @lucasangi)
 * Added formal support for variable names starting with numbers in the dot-notation: `$.2`
 
 
