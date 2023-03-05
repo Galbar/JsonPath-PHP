@@ -52,7 +52,8 @@ class JsonPath
                     }
                 }
                 if (empty($newSelection)) {
-                    $selection = false;
+                    $selection = $newSelection;
+                    $hasDiverged = $hasDiverged || $newHasDiverged;
                     break;
                 } else {
                     $jsonPath = $match[2];
@@ -64,7 +65,8 @@ class JsonPath
                     $newSelection = array_merge($newSelection, $result);
                 }
                 if (empty($newSelection)) {
-                    $selection = false;
+                    $selection = $newSelection;
+                    $hasDiverged = $hasDiverged || $newHasDiverged;
                     break;
                 } else {
                     $jsonPath = $match[1];
@@ -81,7 +83,8 @@ class JsonPath
                     $newSelection = array_merge($newSelection, $result);
                 }
                 if (empty($newSelection)) {
-                    $selection = false;
+                    $selection = $newSelection;
+                    $hasDiverged = $hasDiverged || $newHasDiverged;
                     break;
                 } else {
                     $jsonPath = "";

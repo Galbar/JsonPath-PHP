@@ -35,20 +35,11 @@ class JsonObjectIssue37Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $result);
     }
 
-    /**
-     * The test case in the issue suggests that in this case an empty array
-     * should be returned. This seems to go against the original specification
-     * of [JsonPath](https://goessner.net/articles/JsonPath/) where it states
-     * that in case of no match `false` should be returned.
-     *
-     * This case is a "no match" kind of case so current behaviour is
-     * considered correct.
-     */
     public function testCase2()
     {
         $jsonObject = new JsonObject('["first", "second"]');
         $result = $jsonObject->get('$[0:0]');
-        $expected = false;
+        $expected = [];
         $this->assertEquals($expected, $result);
     }
 
@@ -93,20 +84,11 @@ class JsonObjectIssue37Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $result);
     }
 
-    /**
-     * The test case in the issue suggests that in this case an empty array
-     * should be returned. This seems to go against the original specification
-     * of [JsonPath](https://goessner.net/articles/JsonPath/) where it states
-     * that in case of no match `false` should be returned.
-     *
-     * This case is a "no match" kind of case so current behaviour is
-     * considered correct.
-     */
     public function testCase6()
     {
         $jsonObject = new JsonObject('42');
         $result = $jsonObject->get('$..*');
-        $expected = false;
+        $expected = [];
         $this->assertEquals($expected, $result);
     }
 }

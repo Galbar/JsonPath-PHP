@@ -37,15 +37,6 @@ class SelectChildren
             foreach ($partial as $key => $item) {
                 $result[] = &$partial[$key];
             }
-        } else if (preg_match(Language\Regex::CHILD_NAME_LIST, $contents, $match)) {
-            $names = array_map(
-                function($x) { return trim($x, " \t\n\r\0\x0B'\""); },
-                explode(Language\Token::COMA, $contents)
-            );
-            if (count($names) > 1) {
-                $hasDiverged = true;
-            }
-            $result = Expression\ChildNameList::evaluate($partial, $names, $createInexistent);
         } else if (preg_match(Language\Regex::INDEX_LIST, $contents)) {
             $indexes = array_map(
                 function($x) { return intval(trim($x)); },
@@ -55,6 +46,15 @@ class SelectChildren
                 $hasDiverged = true;
             }
             $result = Expression\IndexList::evaluate($partial, $indexes, $createInexistent);
+        } else if (preg_match(Language\Regex::CHILD_NAME_LIST, $contents, $match)) {
+            $names = array_map(
+                function($x) { return trim($x, " \t\n\r\0\x0B'\""); },
+                explode(Language\Token::COMA, $contents)
+            );
+            if (count($names) > 1) {
+                $hasDiverged = true;
+            }
+            $result = Expression\ChildNameList::evaluate($partial, $names, $createInexistent);
         } else if (preg_match(Language\Regex::ARRAY_INTERVAL, $contents, $match)) {
             // end($match) has the matched group with the interval
             $numbers = explode(Language\Token::COLON, end($match));

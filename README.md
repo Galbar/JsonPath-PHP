@@ -10,15 +10,16 @@ This is a [JSONPath](http://goessner.net/articles/JsonPath/) implementation for 
 
 This implementation features all elements in the specification except the `()` operator (in the spcecification there is the `$..a[(@.length-1)]`, but this can be achieved with `$..a[-1]` and the latter is simpler).
 
-On top of this it implements some extended features:
-* Regex match key (p.e. `$.*[?(/^bo{2}k$/)]` or `$[?(/a\wthors/)]`).
-* Regex match value comparisons (p.e. `$.store.book[?(@.author =~ /.*Tolkien/)]`)
-* For the child operator `[]` there is no need to surround child names with quotes (p.e. `$.[store][book, bicycle]`) except if the name of the field is a non-valid javascript variable name.
-* `.length` can be used to get the length of a string, get the length of an array and to check if a node has children.
+In case of no matches for the query it will return an empty array.
 
 Features
 ========
 This implementation has the following features:
+* Regex match key (p.e. `$.*[?(/^bo{2}k$/)]` or `$[?(/a\wthors/)]`).
+* Regex match value comparisons (p.e. `$.store.book[?(@.author =~ /.*Tolkien/)]`)
+* For the child operator `[]` there is no need to surround child names with quotes (p.e. `$[store][book, bicycle]`) except if the name of the field is a non-valid javascript variable name.
+* `.length` can be used to get the length of a string, get the length of an array and to check if a node has children.
+* The `in` operator allows filtering for a value in a specified list: `$..[?(@.author in ["Nigel Rees", "Evelyn Waugh", $.store.book[3].author])]`
 * Object oriented implementation.
 * __Get__, __set__ and __add__ operations.
 * Magic methods implemented:
@@ -82,7 +83,8 @@ When creating a new instance of JsonObject, you can pass a second parameter to t
 This sets the behaviour of the instance to use SmartGet.
 
 What SmartGet does is to determine if the given JsonPath branches at some point, if it does it behaves as usual; 
-otherwise, it will directly return the value pointed by the given path (not the array containing it).
+otherwise, it will directly return the value pointed by the given path (not the
+array containing it) or `false` if not found.
 
 GetJsonObjects
 --------------
@@ -134,7 +136,7 @@ dashes (`-`).
 
 ### Limitations on the specification:  
 * The jsonpath inside _value_ cannot contain `or`, `and` or any comparator.
-* Jsonpaths in _value_ return the first element of the set or false if no result.
+* Jsonpaths in _value_ return the first element of the set or `false` if no result.
 * Boolean operations can't be grouped with parethesis.
 * `and`s are run before `or`s. That means that `a and 1 = b or c != d` is the same
 as `(a and 1) or (c != d)`

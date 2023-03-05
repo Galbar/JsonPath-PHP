@@ -157,7 +157,7 @@ class JsonObjectTest extends \PHPUnit_Framework_TestCase
                 "$.store.bicycle"
             ),
             array(
-                false,
+                [],
                 "$.store.bicycl"
             ),
             array(
@@ -170,7 +170,7 @@ class JsonObjectTest extends \PHPUnit_Framework_TestCase
                 "$.store.book[*].price"
             ),
             array(
-                false,
+                [],
                 "$.store.book[7]"
             ),
             array(
@@ -221,11 +221,11 @@ class JsonObjectTest extends \PHPUnit_Framework_TestCase
                 "$.store.book[:2].price"
             ),
             array(
-                false,
+                [],
                 "$.store.bicycle.price[2]"
             ),
             array(
-                false,
+                [],
                 "$.store.bicycle.price.*"
             ),
             array(
@@ -398,7 +398,7 @@ class JsonObjectTest extends \PHPUnit_Framework_TestCase
                 "$.store[?(! @..price || @..color == 'red')].available"
             ),
             array(
-                false,
+                [],
                 "$.store[?(@.price.length == 3)]"
             ),
             array(
@@ -408,7 +408,7 @@ class JsonObjectTest extends \PHPUnit_Framework_TestCase
                 "$.store[?(@.color.length == 3)].price"
             ),
             array(
-                false,
+                [],
                 "$.store[?(@.color.length == 5)].price"
             ),
             array(
@@ -497,6 +497,10 @@ class JsonObjectTest extends \PHPUnit_Framework_TestCase
                 "$.store.book[7]"
             ),
             array(
+                [],
+                "$.store.book[7, 9]"
+            ),
+            array(
                 array(
                     12.99,
                     8.99
@@ -541,7 +545,7 @@ class JsonObjectTest extends \PHPUnit_Framework_TestCase
                 "$.store.bicycle.price[2]"
             ),
             array(
-                false,
+                [],
                 "$.store.bicycle.price.*"
             ),
             array(
@@ -702,7 +706,7 @@ class JsonObjectTest extends \PHPUnit_Framework_TestCase
                 "$.store[?(! @..price || @..color == 'red')].available"
             ),
             array(
-                false,
+                [],
                 "$.store[?(@.price.length == 3)]"
             ),
             array(
@@ -712,7 +716,7 @@ class JsonObjectTest extends \PHPUnit_Framework_TestCase
                 "$.store[?(@.color.length == 3)].price"
             ),
             array(
-                false,
+                [],
                 "$.store[?(@.color.length == 5)].price"
             ),
             array(
@@ -1191,17 +1195,18 @@ EOF;
         $bike->set('$.price', 412);
         $this->assertEquals($jsonObject->{'$.store.bicycle'}, $bike->getValue());
 
-        $this->assertFalse($jsonObject->getJsonObjects('$.abc'));
+        $this->assertEquals(false, $jsonObject->getJsonObjects('$.abc'));
+        $this->assertEquals([], $jsonObject->getJsonObjects('$[abc, 234f]'));
     }
 
     // Bug when using negative index triggers DivisionByZeroError
     // https://github.com/Galbar/JsonPath-PHP/issues/60
     public function testNegativeIndexOnEmptyArray() {
         $object = new \JsonPath\JsonObject('{"data": []}');
-        $this->assertFalse($object->get('$.data[-1]'));
+        $this->assertEquals([], $object->get('$.data[-1]'));
 
         $object = new \JsonPath\JsonObject('{"data": [{"id": 1},{"id": 2}]}');
-        $this->assertFalse($object->get('$.data[-5].id'));
+        $this->assertEquals([], $object->get('$.data[-5].id'));
 
         $object = new \JsonPath\JsonObject('{"data": [{"id": 1}]}');
         $this->assertEquals($object->get('$.data[-1].id'), [1]);
@@ -1210,9 +1215,9 @@ EOF;
         $this->assertEquals($object->get('$.data[-1].id'), [2]);
 
         $object = new \JsonPath\JsonObject('{"data": []}');
-        $this->assertFalse($object->get('$.data[1].id'));
+        $this->assertEquals([], $object->get('$.data[1].id'));
 
         $object = new \JsonPath\JsonObject('{"data": [{"id": 1},{"id": 2}]}');
-        $this->assertFalse($object->get('$.data[3].id'));
+        $this->assertEquals([], $object->get('$.data[3].id'));
     }
 }

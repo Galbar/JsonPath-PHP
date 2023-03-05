@@ -205,7 +205,7 @@ class JsonPathKeyRegexMatchTest extends \PHPUnit_Framework_TestCase
         $jsonPath = '$.*[?(/^[A-Z]erman\sMelvil{2}e$/)][0]';
         $result = $jsonObject->get($jsonPath);
         $this->assertEquals(
-            false,
+            [],
             $result
         );
     }
@@ -227,7 +227,7 @@ class JsonPathKeyRegexMatchTest extends \PHPUnit_Framework_TestCase
         $jsonPath = '$.*[?(/R\.?/)][0]';
         $result = $jsonObject->get($jsonPath);
         $this->assertEquals(
-            false,
+            [],
             $result
         );
 
@@ -284,7 +284,7 @@ class JsonPathKeyRegexMatchTest extends \PHPUnit_Framework_TestCase
         $jsonPath = '$.*[?(/^evelyn.waugh$/)].href';
         $result = $jsonObject->get($jsonPath);
         $this->assertEquals(
-            false,
+            [],
             $result
         );
     }
@@ -305,7 +305,7 @@ class JsonPathKeyRegexMatchTest extends \PHPUnit_Framework_TestCase
         $jsonPath = '$.*[?(/^J. R. R. Tolkien$/x)].href';
         $result = $jsonObject->get($jsonPath);
         $this->assertEquals(
-            false,
+            [],
             $result
         );
 

@@ -23,13 +23,12 @@ class GetChild
 {
     public static function apply(&$jsonObject, $childName, $createInexistent = false)
     {
+        $hasDiverged = $childName === Language\Token::ALL;
         if (!is_array($jsonObject)) {
-            return array(array(), false);
+            return array(array(), $hasDiverged);
         }
         $result = array();
-        $hasDiverged = false;
         if ($childName === Language\Token::ALL) {
-            $hasDiverged = true;
             foreach ($jsonObject as $key => $_) {
                 $result[] = &$jsonObject[$key];
             }

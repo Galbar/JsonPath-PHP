@@ -42,7 +42,7 @@ class Value
             if ($length) {
                 $expression = $match[1];
             }
-            $result = false;
+            $result = [];
             if ($expression[0] === Language\Token::ROOT){
                 list($result, $_) = \JsonPath\JsonPath::subtreeGet($root, $root, $expression);
             }
@@ -50,7 +50,7 @@ class Value
                 $expression[0] = Language\Token::ROOT;
                 list($result, $_) = \JsonPath\JsonPath::subtreeGet($root, $partial, $expression);
             }
-            if ($result !== false) {
+            if (!empty($result)) {
                 if ($length) {
                     if (is_array($result[0])) {
                         return (float) count($result[0]);
@@ -65,7 +65,7 @@ class Value
                 }
                 return $result[0];
             }
-            return $result;
+            return false;
         }
     }
 }
