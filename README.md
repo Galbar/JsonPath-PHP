@@ -127,7 +127,7 @@ expr        = ( 'not ' | '! ' )? (value | comp | in_array)
 comp        = value ('==' | '!=' | '<' | '>' | '<=' | '>=' | '=~') value
 value       = (jsonpath | childpath | number | string | boolean | regpattern | null | length)
 length      = (jsonpath | childpath) '.length'
-in_array    = value 'in' '[' value (',' value)* ']'
+in_array    = value 'in' '[' value (',' value)* | jsonpath ']'
 ```
 
 ¹`var_name`: the regex roughly translates to "any valid JavaScript variable
@@ -220,6 +220,7 @@ JsonPath | Result
 `$['store']` | The store.
 `$..book[*][title, 'category', "author"]` | title, category and author of all books.
 `$..book[?(@.author in [$.authors[0], $.authors[2]])]` | All books by "Nigel Rees" or "Herman Melville".
+`$..book[?(@.author in [$.authors])]` | All books written by an author in the authors list.
 `$.store.book[?(@.category == 'fiction' and @.price < 10 or @.color == "red")].price` | Books of fiction with a price lower than 10 or something with of color red. (`and` takes precedence to `or`)
 
 See more examples in the `./tests/Galbar/JsonPath` folder.
