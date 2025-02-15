@@ -35,13 +35,22 @@ class InArray
                 return $result;
             }
 
-            return [Value::evaluate($root, $partial, trim($expression))];
+            return [Value::evaluate($root, $partial, self::unwrapExpression($expression))];
         }
 
         return array_map(
             function ($value) use ($root, $partial) { return Value::evaluate($root, $partial, trim($value)); },
-            explode(self::SEPARATOR, $expression)
+            explode(self::SEPARATOR, self::unwrapExpression($expression))
         );
+    }
+
+    private static function unwrapExpression($expression) {
+        if ($expression[0] === Language\Token::SELECTOR_BEGIN
+            && $expression[strlen($expression) - 1] === Language\Token::SELECTOR_END
+        ) {
+            $expression = substr($expression, 1, -1);
+        }
+        return trim($expression);
     }
 }
 
