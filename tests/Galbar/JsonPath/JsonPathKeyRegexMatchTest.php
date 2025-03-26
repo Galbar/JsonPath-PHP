@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-namespace Tests;
+namespace Galbar\Tests;
 
-use JsonPath\JsonObject;
-use JsonPath\InvalidJsonException;
+use Galbar\JsonPath\JsonObject;
+use Galbar\JsonPath\InvalidJsonException;
 
 /**
  * Class JsonPathKeyRegexMatchTest

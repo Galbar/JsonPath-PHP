@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-namespace Tests;
+namespace Galbar\Tests;
 
-use JsonPath\InvalidJsonException;
-use JsonPath\InvalidJsonPathException;
-use JsonPath\JsonObject;
+use Galbar\JsonPath\InvalidJsonException;
+use Galbar\JsonPath\InvalidJsonPathException;
+use Galbar\JsonPath\JsonObject;
 
 /**
  * Class JsonObjectTest
@@ -1202,22 +1202,22 @@ EOF;
     // Bug when using negative index triggers DivisionByZeroError
     // https://github.com/Galbar/JsonPath-PHP/issues/60
     public function testNegativeIndexOnEmptyArray() {
-        $object = new \JsonPath\JsonObject('{"data": []}');
+        $object = new JsonObject('{"data": []}');
         $this->assertEquals([], $object->get('$.data[-1]'));
 
-        $object = new \JsonPath\JsonObject('{"data": [{"id": 1},{"id": 2}]}');
+        $object = new JsonObject('{"data": [{"id": 1},{"id": 2}]}');
         $this->assertEquals([], $object->get('$.data[-5].id'));
 
-        $object = new \JsonPath\JsonObject('{"data": [{"id": 1}]}');
+        $object = new JsonObject('{"data": [{"id": 1}]}');
         $this->assertEquals($object->get('$.data[-1].id'), [1]);
 
-        $object = new \JsonPath\JsonObject('{"data": [{"id": 1},{"id": 2}]}');
+        $object = new JsonObject('{"data": [{"id": 1},{"id": 2}]}');
         $this->assertEquals($object->get('$.data[-1].id'), [2]);
 
-        $object = new \JsonPath\JsonObject('{"data": []}');
+        $object = new JsonObject('{"data": []}');
         $this->assertEquals([], $object->get('$.data[1].id'));
 
-        $object = new \JsonPath\JsonObject('{"data": [{"id": 1},{"id": 2}]}');
+        $object = new JsonObject('{"data": [{"id": 1},{"id": 2}]}');
         $this->assertEquals([], $object->get('$.data[3].id'));
     }
 }

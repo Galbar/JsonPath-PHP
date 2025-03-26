@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace Utilities;
+namespace Galbar\Utilities;
 
 class ArraySlice
 {

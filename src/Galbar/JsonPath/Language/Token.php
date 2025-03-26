@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace JsonPath\Language;
+namespace Galbar\JsonPath\Language;
 
 class Token
 {
@@ -28,6 +28,7 @@ class Token
     const EXPRESSION_END = ')';
     const ALL = '*';
     const COMA = ',';
+    const COMMA = ',';
     const COLON = ':';
     const COMP_EQ = '==';
     const COMP_NEQ = '!=';

@@ -15,15 +15,15 @@
  * limitations under the License.
  */
 
-namespace JsonPath\Operation;
+namespace Galbar\JsonPath\Operation;
 
-use JsonPath\Language;
+use Galbar\JsonPath\Language;
 
 class GetRecursive
 {
     public static function apply(&$root, &$partial, $jsonPath)
     {
-        list($result, $_) = \JsonPath\JsonPath::subtreeGet($root, $partial, $jsonPath);
+        list($result, $_) = \Galbar\JsonPath\JsonPath::subtreeGet($root, $partial, $jsonPath);
         if ($result === false) {
             $result = array();
         }

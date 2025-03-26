@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-namespace JsonPath;
+namespace Galbar\JsonPath;
 
-use JsonPath\InvalidJsonException;
-use JsonPath\Operation;
+use Galbar\JsonPath\InvalidJsonException;
+use Galbar\JsonPath\Operation;
 
 /**
  * This is a [JSONPath](http://goessner.net/articles/JsonPath/) implementation for PHP.

@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-namespace JsonPath\Expression;
+namespace Galbar\JsonPath\Expression;
 
-use JsonPath\Language;
-use JsonPath\Operation;
+use Galbar\JsonPath\Language;
+use Galbar\JsonPath\Operation;
 
 class Value
 {
@@ -44,11 +44,11 @@ class Value
             }
             $result = [];
             if ($expression[0] === Language\Token::ROOT){
-                list($result, $_) = \JsonPath\JsonPath::subtreeGet($root, $root, $expression);
+                list($result, $_) = \Galbar\JsonPath\JsonPath::subtreeGet($root, $root, $expression);
             }
             else if ($expression[0] === Language\Token::CHILD) {
                 $expression[0] = Language\Token::ROOT;
-                list($result, $_) = \JsonPath\JsonPath::subtreeGet($root, $partial, $expression);
+                list($result, $_) = \Galbar\JsonPath\JsonPath::subtreeGet($root, $partial, $expression);
             }
             if (!empty($result)) {
                 if ($length) {

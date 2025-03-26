@@ -20,8 +20,8 @@
     },
     "autoload": {
         "psr-4": {
-            "JsonPath\\": "src/Galbar/JsonPath",
-            "Utilities\\": "src/Galbar/Utilities"
+            "Galbar\\JsonPath\\": "src/Galbar/JsonPath",
+            "Galbar\\Utilities\\": "src/Galbar/Utilities"
         }
     },
     "autoload-dev": {
