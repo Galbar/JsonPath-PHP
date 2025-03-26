@@ -121,17 +121,17 @@ class JsonObject
     {
         if ($json === null) {
             $this->jsonObject = array();
-        } else if (is_string($json)) {
+        } elseif (is_string($json)) {
             $this->jsonObject = json_decode($json, true);
             if ($this->jsonObject === null) {
-                throw new InvalidJsonException("string does not contain a valid JSON object.");
+                throw new InvalidJsonException('String does not contain a valid JSON object.');
             }
-        } else if (is_array($json)) {
+        } elseif (is_array($json)) {
             $this->jsonObject = $json;
-        } else if (is_object($json)){
+        } elseif (is_object($json)){
             $this->jsonObject = json_decode(json_encode($json), true);
         } else {
-            throw new InvalidJsonException("value does not encode a JSON object.");
+            throw new InvalidJsonException('Value does not encode a JSON object.');
         }
         $this->smartGet = $smartGet;
     }
@@ -198,7 +198,7 @@ class JsonObject
      *
      * @return string
      */
-    public function getJson($options=0)
+    public function getJson($options = 0)
     {
         return json_encode($this->jsonObject, $options);
     }
