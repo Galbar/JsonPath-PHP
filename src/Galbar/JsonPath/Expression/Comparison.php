@@ -30,15 +30,15 @@ class Comparison
         }
         if ($comparator === Language\Token::COMP_EQ) {
             return $left === $right;
-        } else if ($comparator === Language\Token::COMP_NEQ) {
+        } elseif ($comparator === Language\Token::COMP_NEQ) {
             return $left !== $right;
-        } else if ($comparator === Language\Token::COMP_LT) {
+        } elseif ($comparator === Language\Token::COMP_LT) {
             return $left < $right;
-        } else if ($comparator === Language\Token::COMP_GT) {
+        } elseif ($comparator === Language\Token::COMP_GT) {
             return $left > $right;
-        } else if ($comparator === Language\Token::COMP_LTE) {
+        } elseif ($comparator === Language\Token::COMP_LTE) {
             return $left <= $right;
-        } else if ($comparator === Language\Token::COMP_GTE) {
+        } elseif ($comparator === Language\Token::COMP_GTE) {
             return $left >= $right;
         } else { // $comparator === Language\Token::COMP_RE_MATCH
             if (is_string($right) && is_string($left)) {
