@@ -61,7 +61,7 @@ class ArraySlice
             if ($endpoint < 0) {
                 $endpoint = ($step < 0 ? -1 : 0);
             }
-        } else if ($endpoint >= $length) {
+        } elseif ($endpoint >= $length) {
             $endpoint = ($step < 0 ? $length - 1 : $length);
         }
         return $endpoint;
@@ -71,7 +71,7 @@ class ArraySlice
     {
         if ($step === null) {
             $step = 1;
-        } else if ($step === 0) {
+        } elseif ($step === 0) {
             throw new \Exception("Step cannot be 0");
         }
 

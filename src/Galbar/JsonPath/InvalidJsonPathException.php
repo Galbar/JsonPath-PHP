@@ -35,6 +35,6 @@ class InvalidJsonPathException extends \Exception
      */
     public function __construct($token)
     {
-        parent::__construct("Error in JSONPath near '" . $token . "'", 0, null);
+        parent::__construct("Error in JSONPath near '{$token}'", 0, null);
     }
 }

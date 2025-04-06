@@ -26,15 +26,15 @@ class Value
     {
         if ($expression === Language\Token::VAL_NULL) {
             return null;
-        } else if ($expression === Language\Token::VAL_TRUE) {
+        } elseif ($expression === Language\Token::VAL_TRUE) {
             return true;
-        } else if ($expression === Language\Token::VAL_FALSE) {
+        } elseif ($expression === Language\Token::VAL_FALSE) {
             return false;
-        } else if (is_numeric($expression)) {
+        } elseif (is_numeric($expression)) {
             return floatval($expression);
-        } else if (preg_match(Language\Regex::EXPR_STRING, $expression)) {
+        } elseif (preg_match(Language\Regex::EXPR_STRING, $expression)) {
             return substr($expression, 1, strlen($expression) - 2);
-        } else if (preg_match(Language\Regex::EXPR_REGEX, $expression)) {
+        } elseif (preg_match(Language\Regex::EXPR_REGEX, $expression)) {
             return $expression;
         } else {
             $match = array();
@@ -54,8 +54,7 @@ class Value
                 if ($length) {
                     if (is_array($result[0])) {
                         return (float) count($result[0]);
-                    }
-                    if (is_string($result[0])) {
+                    } elseif (is_string($result[0])) {
                         return (float) strlen($result[0]);
                     }
                     return false;

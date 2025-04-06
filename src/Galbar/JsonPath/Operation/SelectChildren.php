@@ -49,7 +49,7 @@ class SelectChildren
         } else if (preg_match(Language\Regex::CHILD_NAME_LIST, $contents, $match)) {
             $names = array_map(
                 function($x) { return trim($x, " \t\n\r\0\x0B'\""); },
-                explode(Language\Token::COMA, $contents)
+                explode(Language\Token::COMMA, $contents)
             );
             if (count($names) > 1) {
                 $hasDiverged = true;

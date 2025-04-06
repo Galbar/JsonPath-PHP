@@ -58,7 +58,7 @@ class JsonPath
                 } else {
                     $jsonPath = $match[2];
                 }
-            } else if (Language\ChildSelector::match($jsonPath, $match)) {
+            } elseif (Language\ChildSelector::match($jsonPath, $match)) {
                 $contents = $match[0];
                 foreach ($selection as &$partial) {
                     list($result, $newHasDiverged) = Operation\SelectChildren::apply($root, $partial, $contents, $createInexistent);
@@ -71,12 +71,12 @@ class JsonPath
                 } else {
                     $jsonPath = $match[1];
                 }
-            } else if (preg_match(Language\Regex::RECURSIVE_SELECTOR, $jsonPath, $match)) {
+            } elseif (preg_match(Language\Regex::RECURSIVE_SELECTOR, $jsonPath, $match)) {
                 $recursivePath = $match[1];
                 if ($recursivePath[0] === '[') {
-                    $recursivePath = "$$recursivePath";
+                    $recursivePath = "${$recursivePath}";
                 } else {
-                    $recursivePath = "$.$recursivePath";
+                    $recursivePath = "$.{$recursivePath}";
                 }
                 foreach ($selection as &$partial) {
                     list($result, $newHasDiverged) = Operation\GetRecursive::apply($root, $partial, $recursivePath);
@@ -87,7 +87,7 @@ class JsonPath
                     $hasDiverged = $hasDiverged || $newHasDiverged;
                     break;
                 } else {
-                    $jsonPath = "";
+                    $jsonPath = '';
                 }
             } else {
                 throw new \JsonPath\InvalidJsonPathException($jsonPath);
