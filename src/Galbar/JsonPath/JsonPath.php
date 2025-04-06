@@ -74,9 +74,9 @@ class JsonPath
             } elseif (preg_match(Language\Regex::RECURSIVE_SELECTOR, $jsonPath, $match)) {
                 $recursivePath = $match[1];
                 if ($recursivePath[0] === '[') {
-                    $recursivePath = "${$recursivePath}";
+                    $recursivePath = "$${recursivePath}";
                 } else {
-                    $recursivePath = "$.{$recursivePath}";
+                    $recursivePath = "$.${recursivePath}";
                 }
                 foreach ($selection as &$partial) {
                     list($result, $newHasDiverged) = Operation\GetRecursive::apply($root, $partial, $recursivePath);

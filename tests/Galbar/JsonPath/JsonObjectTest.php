@@ -1140,8 +1140,8 @@ EOF;
     public function testConstructErrorsProvider()
     {
         return array(
-            array(5, 'value does not encode a JSON object.'),
-            array('{"invalid": json}', 'string does not contain a valid JSON object.')
+            array(5, 'Value does not encode a JSON object.'),
+            array('{"invalid": json}', 'String does not contain a valid JSON object.')
         );
     }
 
