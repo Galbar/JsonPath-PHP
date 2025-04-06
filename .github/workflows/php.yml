@@ -42,9 +42,3 @@ jobs:
 
     - name: Run test suite
       run: composer run-script test-coverage
-
-    - name: Coveralls
-      env:
-        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
-      run: php vendor/bin/coveralls -v
-
