@@ -1,8 +1,7 @@
 
 JsonPath
 ========
-[![Build Status](https://travis-ci.org/Galbar/JsonPath-PHP.svg)](https://travis-ci.org/Galbar/JsonPath-PHP)
-[![Coverage Status](https://coveralls.io/repos/Galbar/JsonPath-PHP/badge.svg?branch=master&service=github)](https://coveralls.io/github/Galbar/JsonPath-PHP?branch=master)
+[![Build Status](https://github.com/Galbar/JsonPath-PHP/actions/workflows/php.yml/badge.svg)](https://github.com/Galbar/JsonPath-PHP/actions/workflows/php.yml)
 [![Latest Stable Version](https://poser.pugx.org/galbar/jsonpath/v/stable)](https://packagist.org/packages/galbar/jsonpath)
 [![License](https://poser.pugx.org/galbar/jsonpath/license)](https://packagist.org/packages/galbar/jsonpath)
 
