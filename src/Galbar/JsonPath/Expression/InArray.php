@@ -2,6 +2,8 @@
 
 namespace JsonPath\Expression;
 
+use JsonPath\Language;
+
 class InArray
 {
     const SEPARATOR = ',';
@@ -17,13 +19,38 @@ class InArray
     private static function prepareList(&$root, &$partial, $expression)
     {
         if (strpos($expression, self::SEPARATOR) === false) {
-            return [Value::evaluate($root, $partial, trim($expression))];
+            if ($expression[0] === Language\Token::ROOT){
+                list($result, $_) = \JsonPath\JsonPath::subtreeGet($root, $root, $expression);
+                if (!$_) {
+                    $result = reset($result);
+                }
+                return $result;
+            }
+            else if ($expression[0] === Language\Token::CHILD) {
+                $expression[0] = Language\Token::ROOT;
+                list($result, $_) = \JsonPath\JsonPath::subtreeGet($root, $partial, $expression);
+                if (!$_) {
+                    $result = reset($result);
+                }
+                return $result;
+            }
+
+            return [Value::evaluate($root, $partial, self::unwrapExpression($expression))];
         }
 
         return array_map(
             function ($value) use ($root, $partial) { return Value::evaluate($root, $partial, trim($value)); },
-            explode(self::SEPARATOR, $expression)
+            explode(self::SEPARATOR, self::unwrapExpression($expression))
         );
+    }
+
+    private static function unwrapExpression($expression) {
+        if ($expression[0] === Language\Token::SELECTOR_BEGIN
+            && $expression[strlen($expression) - 1] === Language\Token::SELECTOR_END
+        ) {
+            $expression = substr($expression, 1, -1);
+        }
+        return trim($expression);
     }
 }
 
