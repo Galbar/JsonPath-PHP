@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-namespace Tests\Utilities;
+namespace Galbar\Tests\Utilities;
 
-use Utilities\ArraySlice;
+use Galbar\Utilities\ArraySlice;
 
 /**
  * Class ArraySliceTest

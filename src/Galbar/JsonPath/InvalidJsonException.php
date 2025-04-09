@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace JsonPath;
+namespace Galbar\JsonPath;
 
 /**
  * Exception that is raised when a invalid value is given to the JsonObject

@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-namespace Tests;
+namespace Galbar\Tests;
 
-use JsonPath\InvalidJsonException;
-use JsonPath\InvalidJsonPathException;
-use JsonPath\JsonObject;
+use Galbar\JsonPath\InvalidJsonException;
+use Galbar\JsonPath\InvalidJsonPathException;
+use Galbar\JsonPath\JsonObject;
 
 /**
  * Class JsonObjectTest

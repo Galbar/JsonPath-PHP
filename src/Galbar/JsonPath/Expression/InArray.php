@@ -1,6 +1,6 @@
 <?php
 
-namespace JsonPath\Expression;
+namespace Galbar\JsonPath\Expression;
 
 class InArray
 {

@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-namespace JsonPath\Operation;
+namespace Galbar\JsonPath\Operation;
 
-use JsonPath\Language;
-use JsonPath\Expression;
+use Galbar\JsonPath\Language;
+use Galbar\JsonPath\Expression;
 
 class SelectChildren
 {

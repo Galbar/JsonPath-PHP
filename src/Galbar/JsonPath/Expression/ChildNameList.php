@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-namespace JsonPath\Expression;
+namespace Galbar\JsonPath\Expression;
 
-use JsonPath\Language;
+use Galbar\JsonPath\Language;
 
 class ChildNameList
 {

@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-namespace JsonPath;
+namespace Galbar\JsonPath;
 
-use JsonPath\Expression;
-use JsonPath\Language;
-use JsonPath\Operation;
+use Galbar\JsonPath\Expression;
+use Galbar\JsonPath\Language;
+use Galbar\JsonPath\Operation;
 
 class JsonPath
 {
@@ -32,7 +32,7 @@ class JsonPath
     {
         $match = array();
         if (preg_match(Language\Regex::ROOT_OBJECT, $jsonPath, $match) === 0) {
-            throw new \JsonPath\InvalidJsonPathException($jsonPath);
+            throw new \Galbar\JsonPath\InvalidJsonPathException($jsonPath);
         }
         $hasDiverged = false;
         $jsonPath = $match[1];
@@ -90,7 +90,7 @@ class JsonPath
                     $jsonPath = '';
                 }
             } else {
-                throw new \JsonPath\InvalidJsonPathException($jsonPath);
+                throw new \Galbar\JsonPath\InvalidJsonPathException($jsonPath);
             }
             $selection = $newSelection;
             $hasDiverged = $hasDiverged || $newHasDiverged;

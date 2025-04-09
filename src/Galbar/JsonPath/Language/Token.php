@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace JsonPath\Language;
+namespace Galbar\JsonPath\Language;
 
 class Token
 {

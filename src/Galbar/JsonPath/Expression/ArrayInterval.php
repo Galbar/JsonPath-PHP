@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-namespace JsonPath\Expression;
+namespace Galbar\JsonPath\Expression;
 
-use Utilities\ArraySlice;
-use JsonPath\Language;
+use Galbar\Utilities\ArraySlice;
+use Galbar\JsonPath\Language;
 
 class ArrayInterval
 {
